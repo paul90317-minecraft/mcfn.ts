@@ -1,0 +1,239 @@
+// https://zh.minecraft.wiki/w/%E5%91%BD%E4%BB%A4/execute?variant=zh-tw
+
+import { TARGET } from '../type/selector'
+import { Scope, Command } from '../core/scope'
+import { MCFunction } from '@/core/function';
+import { Coordinate } from '../type/coord';
+import { BLOCKS, DIMENSIONS, ENTITY_TYPES } from '@/enum';
+import { InlineScope } from '../core/scope';
+import { Predicate } from '@/core/registry';
+import { Data } from './data';
+import { Score } from './scoreboard/score';
+import { Item, Slot } from './item';
+
+export abstract class Condition {
+    public abstract toString(): string
+}
+
+type IF_ARGS = Condition | Predicate | DIMENSIONS | Data | (()=>void) | MCFunction
+class If {
+    constructor(public readonly condition: IF_ARGS) {}
+    public toString() {
+        if(this.condition instanceof Condition)
+            return `if ${this.condition}`;
+        if(this.condition instanceof Predicate)
+            return `if predicate ${this.condition}`
+        if (this.condition instanceof Data)
+            return `if data ${this.condition}`
+        if (this.condition instanceof Function)
+            return `if function ${new MCFunction(this.condition)}`
+        if (this.condition instanceof MCFunction)
+            return `if function ${this.condition}`
+        return `if in ${this.condition}`
+    }
+}
+
+class Unless extends If {
+    constructor(public readonly condition: IF_ARGS) {super(condition)}
+    public toString() {
+        return 'unless' + super.toString().substring(2)
+    }
+}
+
+class As {
+    constructor(public readonly entity: TARGET) {}
+    public toString() {
+        return `as ${this.entity}`;
+    }
+}
+
+class At {
+    constructor(public readonly entity: TARGET) {}
+    public toString() {
+        return `at ${this.entity}`;
+    }
+}
+
+class Positioned {
+    constructor(public readonly position: Coordinate) {}
+    public toString() {
+        return `positioned ${this.position}`;
+    }
+}
+
+class Summon {
+    constructor(public readonly entity: ENTITY_TYPES) {}
+    public toString() {
+        return `summon ${this.entity}`;
+    }
+}
+
+class In {
+    constructor(public readonly dim: DIMENSIONS) {}
+    public toString() {
+        return `in ${this.dim}`;
+    }
+}
+type RELATION = 'attacker' | 'controller' | 'leasher' | 'origin' | 'owner' | 'passengers' | 'target' | 'vehicle'
+
+class On {
+    constructor(public readonly rel: RELATION) {}
+    public toString() {
+        return `on ${this.rel}`;
+    }
+}
+type TYPES = 'byte' | 'double' | 'float' | 'int' | 'long' | 'short'
+type BOSSATTR = 'max' | 'value'
+class StoreData {
+    constructor(
+        public readonly source: 'success' | 'result',
+        public readonly target: Data,
+        public readonly tp: TYPES
+    ) {
+
+    }
+}
+class StoreScore {
+    constructor(public readonly source: 'success' | 'result', public readonly target: Score) {
+
+    }
+}
+
+class StoreBossbar {
+    constructor(
+        public readonly source: 'success' | 'result', 
+        public readonly id: string, 
+        public readonly where: BOSSATTR
+    ) {
+
+    }
+}
+
+class Control {
+    private arguments: (If | Unless | As | At | Positioned | Summon | In | On | StoreData | StoreScore | StoreBossbar)[];
+    public constructor() {
+        this.arguments = [];
+    }
+
+    public store(
+        source: 'success' | 'result',
+        target: Data,
+        tp: TYPES
+    ): void
+    public store(source: 'success' | 'result', target: Score): void
+    public store(
+        source: 'success' | 'result', 
+        id: string, 
+        where: BOSSATTR
+    ): void
+    public store(
+        source: 'success' | 'result',
+        target: Data | Score | string,
+        opt?: BOSSATTR | TYPES
+    ) {
+        if(target instanceof Data)
+            this.arguments.push(new StoreData(source, target, opt as TYPES))
+        else if(target instanceof Score)
+            this.arguments.push(new StoreScore(source, target))
+        else 
+            this.arguments.push(new StoreBossbar(source, target, opt as BOSSATTR))
+        return this
+    }
+
+    public as(entity: TARGET) {
+        this.arguments.push(new As(entity))
+        return this
+    }
+    
+    public at(entity: TARGET) {
+        this.arguments.push(new At(entity))
+        return this
+    }
+    public if (condition: Condition) {
+        this.arguments.push(new If(condition))
+        return this
+    }
+
+    public unless(condition: IF_ARGS) {
+        this.arguments.push(new Unless(condition))
+        return this
+    }
+    public positioned(position: Coordinate) {
+        this.arguments.push(new Positioned(position))
+        return this
+    }
+    public summon(entity: ENTITY_TYPES) {
+        this.arguments.push(new Summon(entity))
+        return this
+    }
+    public in(dim: DIMENSIONS) {
+        this.arguments.push(new In(dim))
+        return this
+    }
+    public on (rel: RELATION) {
+        this.arguments.push(new On(rel))
+    }
+    
+    public run(fn: MCFunction): void
+    public run(fn: ()=>void, inline: boolean): void
+    public run(fn: (()=>void) | MCFunction, inline = false) {
+        new Execute(this, fn, inline)
+    }
+    public toString() {
+        return this.arguments.join(' ')
+    }
+}
+
+class Execute extends Command {
+    public readonly control: Control
+    public readonly cmd: Command
+    constructor(control: Control, fn: (() => void) | MCFunction, inline: boolean) {
+        super()
+        this.control = control
+        if(fn instanceof MCFunction) {
+            this.cmd = new InlineScope(()=>fn.call())
+            return
+        }
+        if(inline) {
+            this.cmd = new InlineScope(fn).get()
+            return;
+        }
+        this.cmd = new InlineScope(()=>new MCFunction(fn).call()).get()
+    }
+    toString() {
+        return `execute ${this.control} run ${this.cmd}`
+        
+    }
+}
+
+
+function store(
+    source: 'success' | 'result',
+    target: Data,
+    tp: TYPES
+): void
+function store(source: 'success' | 'result', target: Score): void
+function store(
+    source: 'success' | 'result', 
+    id: string, 
+    where: BOSSATTR
+): void
+function store(
+    source: 'success' | 'result',
+    target: Data | Score | string,
+    opt?: BOSSATTR | TYPES
+) {
+    return new Control().store(source, target as string, opt as BOSSATTR)
+}
+
+export const execute = {
+    as: (entity: TARGET) => new Control().as(entity),
+    at: (entity: TARGET) => new Control().at(entity),
+    if: (condition: IF_ARGS) => new Control().if(condition),
+    unless: (condition: IF_ARGS) => new Control().unless(condition),
+    positioned: (position: Coordinate) => new Control().positioned(position),
+    summon: (entity: ENTITY_TYPES) => new Control().summon(entity),
+    in: (dim: DIMENSIONS) => new Control().in(dim),
+    on: (rel: RELATION) => new Control().on(rel),
+    store
+}
