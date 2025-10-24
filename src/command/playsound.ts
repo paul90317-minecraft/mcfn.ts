@@ -1,9 +1,9 @@
 // https://minecraft.wiki/w/Commands/playsound
 
-import { Command } from "@/core/scope"; 
-import { Coordinate } from "@/type/coord";
-import { TARGET } from "@/type/selector"; 
-import { SOUND_EVENTS } from "@/enum"; // 引入使用者提供的 SOUND_EVENTS
+import { Command } from "../core/scope"; 
+import { Coordinate } from "../type/coord";
+import { TARGET } from "../type/selector"; 
+import { SOUND_EVENTS } from "../enum"; // 引入使用者提供的 SOUND_EVENTS
 
 /**
  * 定義 Minecraft Java Edition 的音效分類 (source)。

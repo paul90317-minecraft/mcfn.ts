@@ -1,16 +1,17 @@
 // https://minecraft.fandom.com/wiki/Item
 // https://minecraft.wiki/w/Data_component_format#List_of_components
+// https://minecraft.fandom.com/wiki/Commands/clear
 
-import { TARGET } from "@/type/selector";
-import { Coordinate } from "@/type/coord";
-import { ITEM_SLOTS, SLOT_WILDCARD } from "@/enum/extend/item_slot";
-import { ITEMS } from "@/enum";
-import { COMPONENTS, EXCL_COMPONENTS } from "@/enum/extend/component";
-import { NBTBase } from "@/type/nbt";
-import { Command } from "@/core/scope";
-import { ItemModifer } from "@/core/registry";
+import { TARGET } from "../type/selector";
+import { Coordinate } from "../type/coord";
+import { ITEM_SLOTS, SLOT_WILDCARD } from "../enum/extend/item_slot";
+import { ITEMS } from "../enum";
+import { COMPONENTS, EXCL_COMPONENTS } from "../enum/extend/component";
+import { NBTBase } from "../type/nbt";
+import { Command } from "../core/scope";
+import { ItemModifer } from "../core/registry";
 import { Condition } from "./execute";
-import { ItemTag } from "@/core/tag";
+import { ItemTag } from "../core/tag";
 
 export class Slot {
     private target: TARGET | Coordinate
@@ -19,16 +20,19 @@ export class Slot {
         this.target = target
         this.slot = slot
     }
-    public replace(source: Item, count?: number): void
-    public replace(source: Slot, modifier?: ItemModifer): void
-    public replace(source: Item | Slot, status?: number | ItemModifer) {
-        if(this.slot.at(-1) == '*')
-            throw new Error('The slot can not be wildcard when replacing.')
-        if(source instanceof Item)
-            new ItemReplaceWith(this, source, (status ?? 1) as number)
-        else
-            new ItemReplaceFrom(this, source, status as ItemModifer)
+    public replace = {
+        with: (item: Item, count?: number) => {
+            if(this.slot.at(-1) == '*')
+                throw new Error('The slot can not be wildcard when modifying.')
+            new ItemReplaceWith(this, item, count)
+        },
+        from: (source: Slot, mod?: ItemModifer) => {
+            if(this.slot.at(-1) == '*')
+                throw new Error('The slot can not be wildcard when modifying.')
+            new ItemReplaceFrom(this, source, mod)
+        }
     }
+    
     public modify(mod: ItemModifer) {
         if(this.slot.at(-1) == '*')
             throw new Error('The slot can not be wildcard when modifying.')
@@ -44,17 +48,14 @@ export class Slot {
 }
 
 class ItemReplaceWith extends Command {
-    private target: Slot
-    private item: Item
-    private count: number
-    constructor(target: Slot, source: Item, count: number) {
+    constructor(private target: Slot, private item: Item, private count?: number) {
         super()
-        this.target = target
-        this.item = source
-        this.count = count
     }
     public toString(): string {
-        return `item replace ${this.target} with ${this.item} ${this.count}`
+        let base = `item replace ${this.target} with ${this.item}`
+        if(this.count)
+            base += `  ${this.count}`
+        return base
     }
 }
 
@@ -105,6 +106,12 @@ export class Item {
             .join(',');
         return `${this.item}[${temp}]`
     }
+    public clear(target?: TARGET, maxCount?: number) {
+        new Clear(target, this, maxCount)
+    }
+    public give(target: TARGET, count?: number){
+        new Give(target, this, count)
+    }
 }
 
 class ItemMatch extends Condition {
@@ -115,3 +122,59 @@ class ItemMatch extends Condition {
         return `items ${this.slot} ${this.item}`
     }
 }
+
+class Clear extends Command {
+    constructor(
+        private targets?: TARGET,
+        private item?: Item, 
+        private maxCount?: number 
+    ) {
+        super();
+        if (this.maxCount !== undefined && (this.maxCount < 0 || this.maxCount > 2147483647)) {
+            throw Error('maxCount must be no less than 0 in Java Edition');
+        }
+    }
+
+    public toString(): string {
+        let command = `clear`;
+
+        if (this.targets)
+            command += ` ${this.targets}`;
+
+        if (this.item)
+            command += ` ${this.item}`;
+
+        if (this.maxCount !== undefined)
+            command += ` ${this.maxCount}`;
+
+        return command;
+    }
+}
+
+class Give extends Command {
+    constructor(
+        private target: TARGET,
+        private item: Item,
+        private count?: number
+    ) {
+        super();
+        if (count !== undefined && (count < 1 || count > 2147483647)) {
+            throw new Error(`Count must be between 1 and 2147483647 (inclusive) in Java Edition.`);
+        }
+        this.count = count;
+    }
+
+    public toString(): string {
+        let command = `give ${this.target} ${this.item}`;
+
+        if (this.count !== undefined) {
+            command += ` ${this.count}`;
+        }
+        
+        return command;
+    }
+}
+
+export const item = Object.assign((it: ITEMS, comp: Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>)=>new Item(it, comp), {
+    slot: (tar: Coordinate | TARGET, slot: ITEM_SLOTS)=>new Slot(tar, slot)
+})

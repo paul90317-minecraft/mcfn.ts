@@ -1,5 +1,5 @@
-import { MCFunction } from "@/core/function";
-import { Command, InlineScope } from "@/core/scope";
+import { MCFunction } from "../command/function";
+import { Command, InlineScope } from "../core/scope";
 
 export function ret(code: (()=>void) | 'fail' | number, inline: boolean = false) {
     new Return(code, inline)

@@ -1,6 +1,6 @@
-import { Command } from "@/core/scope";
-import { DAMAGE_TYPES } from "@/enum";
-import { TARGET } from "@/type/selector";
+import { Command } from "../core/scope";
+import { DAMAGE_TYPES } from "../enum";
+import { TARGET } from "../type/selector";
 
 
 class Damage extends Command {

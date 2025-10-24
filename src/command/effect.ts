@@ -1,6 +1,6 @@
-import { Command } from "@/core/scope";
-import { TARGET } from "@/type/selector";
-import { MOB_EFFECTS } from "@/enum";
+import { Command } from "../core/scope";
+import { TARGET } from "../type/selector";
+import { MOB_EFFECTS } from "../enum";
 
 type EffectDuration = number | 'infinite';
 

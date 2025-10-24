@@ -1,8 +1,8 @@
 // https://minecraft.wiki/w/Commands/tag
 
-import { TARGET } from "@/type/selector"
-import { Command } from "@/core/scope"
-import { config } from "@/config"
+import { TARGET } from "../type/selector"
+import { Command } from "../core/scope"
+import { config } from "../config"
 
 const tags: Set<string> = new Set()
 
@@ -49,4 +49,8 @@ export class EntityTag {
     public toString(){
         return `${config.namespace}.${this.name}`
     }
+}
+
+export function tag(name?: string) {
+    return new EntityTag(name)
 }

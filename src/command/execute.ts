@@ -1,15 +1,16 @@
 // https://zh.minecraft.wiki/w/%E5%91%BD%E4%BB%A4/execute?variant=zh-tw
 
 import { TARGET } from '../type/selector'
-import { Scope, Command } from '../core/scope'
-import { MCFunction } from '@/core/function';
+import { Command } from '../core/scope'
+import { MCFunction } from './function';
 import { Coordinate } from '../type/coord';
-import { BLOCKS, DIMENSIONS, ENTITY_TYPES } from '@/enum';
+import { BLOCKS, DIMENSIONS, ENTITY_TYPES } from '../enum';
 import { InlineScope } from '../core/scope';
-import { Predicate } from '@/core/registry';
+import { Predicate } from '../core/registry';
 import { Data } from './data';
 import { Score } from './scoreboard/score';
 import { Item, Slot } from './item';
+import { BossBar } from './bossbar';
 
 export abstract class Condition {
     public abstract toString(): string
@@ -86,26 +87,35 @@ type TYPES = 'byte' | 'double' | 'float' | 'int' | 'long' | 'short'
 type BOSSATTR = 'max' | 'value'
 class StoreData {
     constructor(
-        public readonly source: 'success' | 'result',
-        public readonly target: Data,
-        public readonly tp: TYPES
+        private source: 'success' | 'result',
+        private target: Data,
+        private tp: TYPES
     ) {
 
     }
+    public toString() {
+        return `store ${this.source} ${this.target} ${this.tp}`
+    }
 }
 class StoreScore {
-    constructor(public readonly source: 'success' | 'result', public readonly target: Score) {
+    constructor(private source: 'success' | 'result', private target: Score) {
 
+    }
+    public toString() {
+        return `store ${this.source} ${this.target}`
     }
 }
 
 class StoreBossbar {
     constructor(
-        public readonly source: 'success' | 'result', 
-        public readonly id: string, 
-        public readonly where: BOSSATTR
+        private source: 'success' | 'result', 
+        private bar: BossBar, 
+        private attr: BOSSATTR
     ) {
 
+    }
+    public toString() {
+        return `store ${this.source} ${this.bar} ${this.attr}`
     }
 }
 
@@ -119,16 +129,16 @@ class Control {
         source: 'success' | 'result',
         target: Data,
         tp: TYPES
-    ): void
-    public store(source: 'success' | 'result', target: Score): void
+    ): this
+    public store(source: 'success' | 'result', target: Score): this
     public store(
         source: 'success' | 'result', 
-        id: string, 
+        id: BossBar, 
         where: BOSSATTR
-    ): void
+    ): this
     public store(
         source: 'success' | 'result',
-        target: Data | Score | string,
+        target: Data | Score | BossBar,
         opt?: BOSSATTR | TYPES
     ) {
         if(target instanceof Data)
@@ -206,24 +216,23 @@ class Execute extends Command {
     }
 }
 
-
+function store(source: 'success' | 'result', target: Score): Control
 function store(
     source: 'success' | 'result',
     target: Data,
     tp: TYPES
-): void
-function store(source: 'success' | 'result', target: Score): void
+): Control
 function store(
     source: 'success' | 'result', 
-    id: string, 
+    id: BossBar, 
     where: BOSSATTR
-): void
+): Control
 function store(
     source: 'success' | 'result',
-    target: Data | Score | string,
+    target: Data | Score | BossBar,
     opt?: BOSSATTR | TYPES
 ) {
-    return new Control().store(source, target as string, opt as BOSSATTR)
+    return new Control().store(source, target as Data, opt as TYPES)
 }
 
 export const execute = {

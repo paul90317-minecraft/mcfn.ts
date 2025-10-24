@@ -1,17 +1,16 @@
 // https://zh.minecraft.wiki/w/%E6%A0%87%E7%AD%BE?variant=zh-tw
 
-import { BLOCKS, ENTITY_TYPES, ITEMS } from "@/enum"
-import { MCFunction, functions } from "./function"
+import { BLOCKS, ENTITY_TYPES, ITEMS } from "../enum"
+import { MCFunction, functions } from "../command/function"
 import fs from 'fs';
-import { config } from "@/config";
-import { create, objectives } from "../command/scoreboard/objective";
-import { registry } from "./registry";
+import { config } from "../config";
+import { LootTable } from "./registry";
 
 type TagRegistry<T> = Record<string, RegistryTag<T>>
 
-type DP_TAGS = 'entity_type' | 'block' | 'function'
+type DP_TAGS = 'entity_type' | 'block' | 'function' | 'loot_table' | 'item';
 
-class RegistryTag<T> {
+export class RegistryTag<T> {
     private name: string
     private values: T[]
     private register: DP_TAGS
@@ -61,7 +60,7 @@ export class EntityTypeTag extends RegistryTag<ENTITY_TYPES> {
 export class ItemTag extends RegistryTag<ITEMS> {
     private static tags: TagRegistry<ITEMS> = {}
     constructor(values: ITEMS[], name?: string) {
-        super('entity_type', ItemTag.tags, values, config.namespace, name)
+        super('item', ItemTag.tags, values, config.namespace, name)
     }
     static _create() {
         for(let tag of Object.values(ItemTag.tags))
@@ -90,57 +89,3 @@ export class FunctionTag extends RegistryTag<MCFunction> {
             tag._create()
     }
 }
-
-let tick: MCFunction | undefined;
-let load: MCFunction | undefined;
-
-export const minecraft = {
-    tick(fn: ()=>void) {
-        if(tick)
-            throw new Error('Duplicated tick function defined.')
-        tick = new MCFunction(fn)
-    },
-    load(fn: ()=>void) {
-        if(load)
-            throw new Error('Duplicated load function defined.')
-        load = new MCFunction(fn)
-    }
-}
-
-process.on('exit', ()=>{
-    class MCFunctionTag extends RegistryTag<MCFunction> {
-        constructor(values: MCFunction[], name: string) {
-            super('function', {}, values, 'minecraft', name)
-        }
-    }
-    
-    if(load || Object.keys(objectives).length)
-        new MCFunctionTag([
-            new MCFunction(()=>{
-                Object.values(objectives).forEach(obj=>{create(obj)})
-                load?.call()
-            })
-        ] ,'load')._create()
-
-    if(tick){
-        new MCFunctionTag([
-            tick
-        ], 'tick')._create()
-    }
-
-    EntityTypeTag._create()
-    FunctionTag._create()
-    BlockTag._create()
-    ItemTag._create()
-
-    Object.values(registry).forEach(record=>{
-        Object.values(record).forEach(reg=>{
-            reg._create()
-        })
-    })
-
-    Object.values(functions).forEach(fn=>{
-        fn._create()
-    })
-
-})

@@ -1,4 +1,4 @@
-import { Command } from "@/core/scope";
+import { Command } from "../core/scope";
 
 
 export function say (message: string) {

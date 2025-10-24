@@ -1,9 +1,9 @@
 // https://minecraft.fandom.com/wiki/Commands/particle
 
-import { Command } from "@/core/scope";
-import { PARTICLE_TYPES } from "@/enum";
-import { Coordinate } from "@/type/coord";
-import { TARGET } from "@/type/selector";
+import { Command } from "../core/scope";
+import { PARTICLE_TYPES } from "../enum";
+import { Coordinate } from "../type/coord";
+import { TARGET } from "../type/selector";
 
 /**
  * 代表 Minecraft Java Edition 的 /particle 指令。

@@ -2,12 +2,12 @@
 // https://minecraft.fandom.com/wiki/Commands/setblock
 
 // 假設的類型引用，參考自其他指令實作 [1, 2]
-import { Command } from "@/core/scope";
-import { BLOCKS } from "@/enum";
-import { Coordinate } from "@/type/coord";
-import { NBTBase, NBTCompound } from "@/type/nbt";
+import { Command } from "../core/scope";
+import { BLOCKS } from "../enum";
+import { Coordinate } from "../type/coord";
+import { NBTBase, NBTCompound } from "../type/nbt";
 import { Condition } from "./execute";
-import { BlockTag } from "@/core/tag";
+import { BlockTag } from "../core/tag";
 
 // 處理 setblock 指令模式
 export type SETBLOCK_MODE = 'destroy' | 'keep' | 'replace' | 'strict';

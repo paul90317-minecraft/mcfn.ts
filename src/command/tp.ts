@@ -1,6 +1,6 @@
-import { Command } from "@/core/scope";
-import { Coordinate } from "@/type/coord";
-import { TARGET } from "@/type/selector";
+import { Command } from "../core/scope";
+import { Coordinate } from "../type/coord";
+import { TARGET } from "../type/selector";
 
 
 

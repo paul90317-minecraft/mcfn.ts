@@ -2,7 +2,7 @@
 // https://minecraft.wiki/w/Item_modifier
 // https://minecraft.wiki/w/Predicate
 
-import { config } from "@/config"
+import { config } from "../config"
 import fs from 'fs';
 
 type  REGISTER = 'loot_table' | 'item_modifier' | 'predicate'

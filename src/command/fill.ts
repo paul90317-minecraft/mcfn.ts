@@ -1,7 +1,7 @@
 // https://minecraft.fandom.com/wiki/Commands/fill
-import { Command } from "@/core/scope";
+import { Command } from "../core/scope";
 import { Block } from "./block"; // 假設 Block 類別來自 setblock 實作 [3]
-import { Coordinate } from "@/type/coord";
+import { Coordinate } from "../type/coord";
 
 type FILL_MODE = 'destroy' | 'hollow' | 'keep' | 'outline' | 'strict';
 type REPLACE_MODE = 'destroy' | 'hollow' | 'outline' | 'strict';

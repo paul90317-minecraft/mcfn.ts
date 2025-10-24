@@ -1,8 +1,8 @@
-import { Command } from "@/core/scope"
+import { Command } from "../core/scope"
 import { Coordinate } from "../type/coord"
 import { NBTBase } from "../type/nbt"
 import { TARGET } from "../type/selector"
-import { config } from "@/config"
+import { config } from "../config"
 
 export abstract class Data {
     protected paths: string[]

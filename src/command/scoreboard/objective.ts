@@ -1,11 +1,11 @@
 // https://minecraft.fandom.com/wiki/Scoreboard
 
-import { OBJECTIVE_CRITERION } from '@/enum/criterion'
-import { TARGET } from '@/type/selector'
-import { Bound } from '@/type/bound'
+import { OBJECTIVE_CRITERION } from '../../enum/criterion'
+import { TARGET } from '../../type/selector'
+import { Bound } from '../../type/bound'
 import { Command } from '../../core/scope'
-import { Score } from '@/command/scoreboard/score'
-import { config } from '@/config'
+import { Score } from './score'
+import { config } from '../..//config'
 
 export const objectives: Record<string, Objective> = {}
 
@@ -61,10 +61,9 @@ export class Objective {
     public toString() {
         return `${config.namespace}.${this.name}`
     }
-}
-
-export function create(objective: Objective) {
-    new CreateObjective(objective)
+    public _create() {
+        new CreateObjective(this)
+    }
 }
 
 class CreateObjective extends Command {
@@ -80,5 +79,7 @@ class CreateObjective extends Command {
 
 
 export function objective(criteria: OBJECTIVE_CRITERION = 'dummy', name?: string) {
-    return new Objective(criteria, name)
+    let o = new Objective(criteria, name)
+    let fn = o.get.bind(o)
+    return Object.assign(fn, o)
 }

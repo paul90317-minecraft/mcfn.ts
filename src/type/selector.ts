@@ -1,10 +1,10 @@
 // https://minecraft.wiki/w/Target_selectors
 // https://zh.minecraft.wiki/w/%E5%91%BD%E4%BB%A4/execute?variant=zh-tw
 
-import { EntityTypeTag } from "@/core/tag"
+import { EntityTypeTag } from "../core/tag"
 import { ObjectiveMatches } from "../command/scoreboard/objective"
-import { EntityTag } from "@/command/tag"
-import { ENTITY_TYPES } from "@/enum"
+import { EntityTag } from "../command/tag"
+import { ENTITY_TYPES } from "../enum"
 import { Bound } from "./bound"
 import { NBTCompound, NBTBase } from "./nbt"
 
@@ -61,3 +61,7 @@ export class Selector {
 }
 
 export type TARGET = Selector | string
+
+export function sel(selector: SELECTORS, filter?: SelectFilter) {
+    return new Selector(selector, filter)
+}

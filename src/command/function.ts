@@ -1,7 +1,7 @@
-import { config } from "@/config";
+import { config } from "../config";
 import fs from 'fs'
-import { Command } from "./scope";
-import { Scope } from './scope'
+import { Command } from "../core/scope";
+import { Scope } from '../core/scope'
 
 export const functions: Record<string, MCFunction> = {}
 
@@ -48,4 +48,10 @@ class Call extends Command {
     public toString(): string {
         return `function ${this.fn}`
     }
+}
+
+export function mcfn(fn: ()=>void) {
+    let mf = new MCFunction(fn)
+    let fn_call = mf.call.bind(mf)
+    return Object.assign(fn_call, mf)
 }

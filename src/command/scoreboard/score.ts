@@ -1,7 +1,7 @@
-import { Objective } from "@/command/scoreboard/objective"
+import { Objective } from "./objective"
 import { TARGET } from "../../type/selector"
 import { Bound } from "../../type/bound"
-import { Command } from "@/core/scope"
+import { Command } from "../../core/scope"
 import { Condition } from "../execute"
 
 type COMPARES = '>' | '<' | '=' | '>=' | '<='

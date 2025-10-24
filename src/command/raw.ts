@@ -1,4 +1,4 @@
-import { Command } from "@/core/scope";
+import { Command } from "../core/scope";
 
 class Raw extends Command {
     constructor(private cmd: string) {super()}

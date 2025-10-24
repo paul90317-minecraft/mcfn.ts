@@ -1,9 +1,9 @@
 // https://minecraft.wiki/w/Commands/summon
 
-import { Command } from "@/core/scope";
-import { Coordinate } from "@/type/coord"; 
-import { ENTITY_TYPES } from "@/enum"; 
-import { NBTBase, NBTCompound } from "@/type/nbt";
+import { Command } from "../core/scope";
+import { Coordinate } from "../type/coord"; 
+import { ENTITY_TYPES } from "../enum"; 
+import { NBTBase, NBTCompound } from "../type/nbt";
 
 /**
  * 代表 Minecraft Java Edition 的 /summon 指令。

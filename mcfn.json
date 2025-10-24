@@ -1,0 +1,10 @@
+{
+    "namespace": "spm",
+    "outdir": "out",
+    "mcmeta": {
+        "pack": {
+            "description": "Special Mobs",
+            "pack_format": 88
+        }
+    }
+}
