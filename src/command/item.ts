@@ -10,7 +10,7 @@ import { COMPONENTS, EXCL_COMPONENTS } from "../enum/extend/component";
 import { NBTBase } from "../type/nbt";
 import { Command } from "../core/scope";
 import { ItemModifer } from "../core/registry";
-import { Condition } from "./execute";
+import { Condition } from "../type/condition";
 import { ItemTag } from "../core/tag";
 
 export class Slot {

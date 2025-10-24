@@ -2,7 +2,7 @@ import { Objective } from "./objective"
 import { TARGET } from "../../type/selector"
 import { Bound } from "../../type/bound"
 import { Command } from "../../core/scope"
-import { Condition } from "../execute"
+import { Condition } from "../../type/condition"
 
 type COMPARES = '>' | '<' | '=' | '>=' | '<='
 type OPERATORS = '>' | '<' | '><' | '=' | '+=' | '-=' | '/=' | '*=' | '%='

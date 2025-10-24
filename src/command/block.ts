@@ -6,7 +6,7 @@ import { Command } from "../core/scope";
 import { BLOCKS } from "../enum";
 import { Coordinate } from "../type/coord";
 import { NBTBase, NBTCompound } from "../type/nbt";
-import { Condition } from "./execute";
+import { Condition } from "../type/condition";
 import { BlockTag } from "../core/tag";
 
 // 處理 setblock 指令模式

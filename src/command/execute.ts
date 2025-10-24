@@ -4,17 +4,13 @@ import { TARGET } from '../type/selector'
 import { Command } from '../core/scope'
 import { MCFunction } from './function';
 import { Coordinate } from '../type/coord';
-import { BLOCKS, DIMENSIONS, ENTITY_TYPES } from '../enum';
+import { DIMENSIONS, ENTITY_TYPES } from '../enum';
 import { InlineScope } from '../core/scope';
 import { Predicate } from '../core/registry';
 import { Data } from './data';
 import { Score } from './scoreboard/score';
-import { Item, Slot } from './item';
 import { BossBar } from './bossbar';
-
-export abstract class Condition {
-    public abstract toString(): string
-}
+import { Condition } from '../type/condition';
 
 type IF_ARGS = Condition | Predicate | DIMENSIONS | Data | (()=>void) | MCFunction
 class If {
