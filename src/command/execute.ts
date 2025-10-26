@@ -1,6 +1,6 @@
 // https://zh.minecraft.wiki/w/%E5%91%BD%E4%BB%A4/execute?variant=zh-tw
 
-import { TARGET } from '../type/selector'
+import { Selector, TARGET } from '../type/selector'
 import { Command } from '../core/scope'
 import { MCFunction } from './function';
 import { Coordinate } from '../type/coord';
@@ -12,12 +12,14 @@ import { Score } from './scoreboard/score';
 import { BossBar } from './bossbar';
 import { Condition } from '../type/condition';
 
-type IF_ARGS = Condition | Predicate | DIMENSIONS | Data | (()=>void) | MCFunction
+type IF_ARGS = Condition | Predicate | DIMENSIONS | Data | (()=>void) | MCFunction | Selector
 class If {
     constructor(public readonly condition: IF_ARGS) {}
     public toString() {
         if(this.condition instanceof Condition)
             return `if ${this.condition}`;
+        if(this.condition instanceof Selector)
+            return `if entity ${this.condition}`;
         if(this.condition instanceof Predicate)
             return `if predicate ${this.condition}`
         if (this.condition instanceof Data)
@@ -79,13 +81,13 @@ class On {
         return `on ${this.rel}`;
     }
 }
-type TYPES = 'byte' | 'double' | 'float' | 'int' | 'long' | 'short'
+type DATA_TYPES = 'byte' | 'double' | 'float' | 'int' | 'long' | 'short'
 type BOSSATTR = 'max' | 'value'
 class StoreData {
     constructor(
         private source: 'success' | 'result',
         private target: Data,
-        private tp: TYPES
+        private tp: DATA_TYPES
     ) {
 
     }
@@ -121,29 +123,25 @@ class Control {
         this.arguments = [];
     }
 
-    public store(
-        source: 'success' | 'result',
-        target: Data,
-        tp: TYPES
-    ): this
-    public store(source: 'success' | 'result', target: Score): this
-    public store(
-        source: 'success' | 'result', 
-        id: BossBar, 
-        where: BOSSATTR
-    ): this
-    public store(
-        source: 'success' | 'result',
-        target: Data | Score | BossBar,
-        opt?: BOSSATTR | TYPES
-    ) {
-        if(target instanceof Data)
-            this.arguments.push(new StoreData(source, target, opt as TYPES))
-        else if(target instanceof Score)
-            this.arguments.push(new StoreScore(source, target))
-        else 
-            this.arguments.push(new StoreBossbar(source, target, opt as BOSSATTR))
-        return this
+    public store(source: 'success' | 'result'): {
+        data: (target: Data, type: DATA_TYPES) => Control;
+        score: (score: Score) => Control;
+        bossbar: (bossbar: BossBar, attr: 'max' | 'value') => Control;
+    }  {
+        return {
+            data: (target: Data, type: DATA_TYPES) => {
+                this.arguments.push(new StoreData(source, target, type))
+                return this;
+            },
+            score: (score: Score) => {
+                this.arguments.push(new StoreScore(source, score))
+                return this;
+            },
+            bossbar: (bossbar: BossBar, attr: 'max' | 'value') => {
+                this.arguments.push(new StoreBossbar(source, bossbar, attr))
+                return this;
+            }
+        }
     }
 
     public as(entity: TARGET) {
@@ -181,7 +179,7 @@ class Control {
     }
     
     public run(fn: MCFunction): void
-    public run(fn: ()=>void, inline: boolean): void
+    public run(fn: ()=>void, inline?: boolean): void
     public run(fn: (()=>void) | MCFunction, inline = false) {
         new Execute(this, fn, inline)
     }
@@ -212,25 +210,6 @@ class Execute extends Command {
     }
 }
 
-function store(source: 'success' | 'result', target: Score): Control
-function store(
-    source: 'success' | 'result',
-    target: Data,
-    tp: TYPES
-): Control
-function store(
-    source: 'success' | 'result', 
-    id: BossBar, 
-    where: BOSSATTR
-): Control
-function store(
-    source: 'success' | 'result',
-    target: Data | Score | BossBar,
-    opt?: BOSSATTR | TYPES
-) {
-    return new Control().store(source, target as Data, opt as TYPES)
-}
-
 export const execute = {
     as: (entity: TARGET) => new Control().as(entity),
     at: (entity: TARGET) => new Control().at(entity),
@@ -240,5 +219,5 @@ export const execute = {
     summon: (entity: ENTITY_TYPES) => new Control().summon(entity),
     in: (dim: DIMENSIONS) => new Control().in(dim),
     on: (rel: RELATION) => new Control().on(rel),
-    store
+    store: (source: 'result' | 'success') => new Control().store(source)
 }

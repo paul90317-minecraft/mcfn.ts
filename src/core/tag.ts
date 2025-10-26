@@ -4,15 +4,14 @@ import { BLOCKS, ENTITY_TYPES, ITEMS } from "../enum"
 import { MCFunction, functions } from "../command/function"
 import fs from 'fs';
 import { config } from "../config";
-import { LootTable } from "./registry";
 
 type TagRegistry<T> = Record<string, RegistryTag<T>>
 
-type DP_TAGS = 'entity_type' | 'block' | 'function' | 'loot_table' | 'item';
+type DP_TAGS = 'entity_type' | 'block' | 'function' | 'item';
 
 export class RegistryTag<T> {
     private name: string
-    private values: T[]
+    protected values: T[]
     private register: DP_TAGS
     private namesp: string
     protected constructor(register: DP_TAGS, registry: TagRegistry<T>, values: T[], namesp: string, name?: string) {
@@ -46,9 +45,9 @@ export class RegistryTag<T> {
     }
 }
 
-export class EntityTypeTag extends RegistryTag<ENTITY_TYPES> {
-    private static tags: TagRegistry<ENTITY_TYPES> = {}
-    constructor(values: ENTITY_TYPES[], name?: string) {
+export class EntityTypeTag extends RegistryTag<ENTITY_TYPES | EntityTypeTag> {
+    private static tags: TagRegistry<ENTITY_TYPES | EntityTypeTag> = {}
+    constructor(values: (ENTITY_TYPES | EntityTypeTag)[], name?: string) {
         super('entity_type', EntityTypeTag.tags, values, config.namespace, name)
     }
     static _create() {
@@ -57,9 +56,9 @@ export class EntityTypeTag extends RegistryTag<ENTITY_TYPES> {
     }
 }
 
-export class ItemTag extends RegistryTag<ITEMS> {
-    private static tags: TagRegistry<ITEMS> = {}
-    constructor(values: ITEMS[], name?: string) {
+export class ItemTag extends RegistryTag<ITEMS | ItemTag> {
+    private static tags: TagRegistry<ITEMS | ItemTag> = {}
+    constructor(values: (ITEMS | ItemTag)[], name?: string) {
         super('item', ItemTag.tags, values, config.namespace, name)
     }
     static _create() {
@@ -68,9 +67,9 @@ export class ItemTag extends RegistryTag<ITEMS> {
     }
 }
 
-export class BlockTag extends RegistryTag<BLOCKS> {
-    static tags: TagRegistry<BLOCKS> = {}
-    constructor(values: BLOCKS[], name?: string) {
+export class BlockTag extends RegistryTag<BLOCKS | BlockTag> {
+    static tags: TagRegistry<BLOCKS | BlockTag> = {}
+    constructor(values: (BLOCKS | BlockTag)[], name?: string) {
         super('block', BlockTag.tags, values, config.namespace, name)
     }
     static _create() {
@@ -79,13 +78,16 @@ export class BlockTag extends RegistryTag<BLOCKS> {
     }
 }
 
-export class FunctionTag extends RegistryTag<MCFunction> {
-    static tags: TagRegistry<MCFunction> = {}
-    constructor(values: MCFunction[], name?: string) {
+export class FunctionTag extends RegistryTag<MCFunction | FunctionTag> {
+    static tags: TagRegistry<MCFunction | FunctionTag> = {}
+    constructor(values: (MCFunction | FunctionTag)[], name?: string) {
         super('function', FunctionTag.tags, values, config.namespace, name)
     }
     static _create() {
         for(let tag of Object.values(FunctionTag.tags))
             tag._create()
+    }
+    public call() {
+        this.values.forEach(fn=>fn.call())
     }
 }

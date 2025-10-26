@@ -1,7 +1,8 @@
 {
-  "name": "mcpack",
+  "name": "@paul90317/mcfn.ts",
   "version": "1.0.0",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "files": ["dist"],
   "license": "MIT",
   "dependencies": {},
   "scripts": {

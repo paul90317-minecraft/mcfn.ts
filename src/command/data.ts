@@ -21,25 +21,25 @@ export abstract class Data {
         return this
     }
     public merge(source: Data | NBTBase) {
-        return new DataModify('merge', this, source)
+        new DataModify('merge', this, source)
     }
     public set(source: Data | NBTBase) {
-        return new DataModify('set', this, source)
+        new DataModify('set', this, source)
     }
     public append(source: Data | NBTBase) {
-        return new DataModify('append', this, source)
+        new DataModify('append', this, source)
     }
     public prepend(source: Data | NBTBase) {
-        return new DataModify('prepend', this, source)
+        new DataModify('prepend', this, source)
     }
     public insert(source: Data | NBTBase, index: number) {
-        return new DataModify('insert', this, source, index)
+        new DataModify('insert', this, source, index)
     }
     public remove() {
-        return new DataModify('remove', this)
+        new DataModify('remove', this)
     }
     public get() {
-        return new DataModify('get', this)
+        new DataModify('get', this)
     }
     public toString() {
         if(this.paths.length)
