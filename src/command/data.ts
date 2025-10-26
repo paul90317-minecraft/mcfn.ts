@@ -1,6 +1,6 @@
 import { Command } from "../core/scope"
 import { Coordinate } from "../type/coord"
-import { NBTBase } from "../type/nbt"
+import { NBTBase, NBTCompound } from "../type/nbt"
 import { TARGET } from "../type/selector"
 import { config } from "../config"
 
@@ -9,8 +9,8 @@ export abstract class Data {
     constructor() {
         this.paths = []
     }
-    public at(key: string | NBTBase) {
-        if(key instanceof NBTBase) {
+    public at(key: string | NBTCompound<Record<string,NBTBase>> | number) {
+        if(key instanceof NBTBase || typeof key === 'number') {
             this.paths.push(`[${key}]`)
             return this
         }

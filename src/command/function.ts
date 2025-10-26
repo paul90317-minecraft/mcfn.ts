@@ -40,6 +40,8 @@ export class MCFunction extends Scope {
     }
 }
 
+export function mcfn(fn: (()=>void), name?: string): MCFunction & (() => void)
+export function mcfn(fn: TAG<MCFunction>[], name?: string): FunctionTag & (() => void)
 export function mcfn(fn: (()=>void) | TAG<MCFunction>[], name?: string) {
     if (fn instanceof Function) {
         let mf = new MCFunction(fn, name)

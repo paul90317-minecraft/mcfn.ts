@@ -174,6 +174,6 @@ class Give extends Command {
     }
 }
 
-export const item = Object.assign((it: ITEM, comp: Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>)=>new Item(it, comp), {
+export const item = Object.assign((it: ITEM, comp?: Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>)=>new Item(it, comp), {
     slot: (tar: Coordinate | TARGET, slot: ITEM_SLOTS)=>new Slot(tar, slot)
 })
