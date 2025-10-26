@@ -1,12 +1,12 @@
 
-import { ItemTag, BlockTag, FunctionTag, EntityTypeTag, RegistryTag } from './tag'
 import { MCFunction, functions } from "../command/function"
 import { config } from "../config";
 import fs from 'fs'
 import { objectives } from "../command/scoreboard/objective";
-import { registry } from "./registry";
+import { LootTable, registries, Registry } from "./registry";
 import { bossbars } from "../command/bossbar";
 import { teams } from "../command/team";
+import { FunctionTag, registry_tags } from './tag';
 
 
 let tick: MCFunction | undefined;
@@ -26,7 +26,7 @@ export const minecraft = {
         if(load)
             throw new Error('Duplicated load function defined.')
         load = new MCFunction(fn)
-    }
+    },
 }
 
 process.on('exit', ()=>{
@@ -34,38 +34,29 @@ process.on('exit', ()=>{
         recursive: true
     })
     fs.writeFileSync(`${config.outdir}/pack.mcmeta`, JSON.stringify(config.mcmeta))
-
-    class MCFunctionTag extends RegistryTag<MCFunction> {
-        constructor(values: MCFunction[], name: string) {
-            super('function', {}, values, 'minecraft', name)
-        }
-    }
     
     if(load || Object.keys(objectives).length)
-        new MCFunctionTag([
+        new FunctionTag([
             new MCFunction(()=>{
                 Object.values(objectives).forEach(obj=>obj._create())
                 Object.values(bossbars).forEach(obj=>obj._create())
                 Object.values(teams).forEach(obj=>obj._create())
                 load?.call()
             })
-        ] ,'load')._create()
+        ] , 'minecraft','load')._create()
 
     if(tick){
-        new MCFunctionTag([
+        new FunctionTag([
             tick
-        ], 'tick')._create()
+        ], 'minecraft', 'tick')._create()
     }
 
-    EntityTypeTag._create()
-    FunctionTag._create()
-    BlockTag._create()
-    ItemTag._create()
+    Object.values(registry_tags).forEach(tag=>{
+        tag._create()
+    })
 
-    Object.values(registry).forEach(record=>{
-        Object.values(record).forEach(reg=>{
-            reg._create()
-        })
+    Object.values(registries).forEach(registry=>{
+        registry._create()
     })
 
     Object.values(functions).forEach(fn=>{

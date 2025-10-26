@@ -1,3 +1,2 @@
-export { ItemModifer, Predicate, LootTable } from './registry'
-export { ItemTag, BlockTag, FunctionTag, EntityTypeTag } from './tag'
-export { minecraft } from './emit'
+export { datapack } from './registry'
+export { minecraft } from './minecraft'

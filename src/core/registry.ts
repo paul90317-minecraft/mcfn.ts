@@ -4,59 +4,73 @@
 
 import { config } from "../config"
 import fs from 'fs';
+import { tag } from './tag'
 
-type  REGISTER = 'loot_table' | 'item_modifier' | 'predicate'
+type  REGISTRY_NAME = 'loot_table' | 'item_modifier' | 'predicate'
 
-export const registry: Record<REGISTER,Record<string, RegistryEntry>> = {
-    loot_table: {},
-    item_modifier: {},
-    predicate: {}
-}
+export const registries: Record<string, Registry> = {}
 
-class RegistryEntry {
-    private register: REGISTER
+export class Registry {
+    private type: REGISTRY_NAME
     private name: string
-    public data: object
-    constructor(register: REGISTER, data: object, name?: string) {
-        this.register = register
-        if(name) {
-            if(name[0] === '_')
-                throw new Error(`${register} name started with _ is not allowed.`)
-            if(name in registry)
-                throw new Error(`Duplicated ${register} name ${name}.`)
-            this.name = name
+    private data?: object
+    private namesp: string
+    constructor(arg: {type: REGISTRY_NAME, data?: object, namesp: string, name?: string}) {
+        this.type = arg.type
+        if(!arg.name && !arg.data)
+            throw new Error(`${arg.type} name and data is not allowed to be zero at the same time.`)
+        if(arg.name) {
+            if(arg.name[0] === '_')
+                throw new Error(`${arg.type} name started with _ is not allowed.`)
+            if(arg.name in registries)
+                throw new Error(`Duplicated ${arg.type} name ${arg.name}.`)
+            this.name = arg.name
         } else {
-            this.name = `_${Object.keys(registry).length}`
+            this.name = `_${Object.keys(registries).length}`
         }
-        registry[this.register][this.name] = this
-        this.data = data
+        registries[`${this.type}/${this}`] = this
+        this.namesp = arg.namesp
+        if(arg.data)
+            this.data = arg.data
     }
     public _create() {
-        let dir = `${config.outdir}/data/${config.namespace}/${this.register}`
+        if(!this.data)
+            return;
+        let dir = `${config.outdir}/data/${this.namesp}/${this.type}`
         fs.mkdirSync(dir, {
             recursive: true
         })
-        fs.writeFileSync(`${dir}/${this.name}`, JSON.stringify(this.data))
+        fs.writeFileSync(`${dir}/${this.name}.json`, JSON.stringify(this.data))
     }
     public toString() {
-        return `${config.namespace}:${this.name}`
+        return `${this.namesp}:${this.name}`
     }
 }
 
-export class ItemModifer extends RegistryEntry {
-    constructor(data: object, name?: string) {
-        super('item_modifier', data, name)
+export class LootTable extends Registry {
+    constructor(opt: {data?: object, namesp: string, name?: string}) {
+        super({...opt, type: 'loot_table'})
     }
 }
 
-export class Predicate extends RegistryEntry {
-    constructor(data: object, name?: string) {
-        super('predicate', data, name)
+export class Predicate extends Registry {
+    constructor(opt: {data?: object, namesp: string, name?: string}) {
+        super({...opt, type: 'predicate'})
     }
 }
 
-export class LootTable extends RegistryEntry {
-    constructor(data: object, name?: string) {
-        super('loot_table', data, name)
+export class ItemModifier extends Registry {
+    constructor(opt: {data?: object, namesp: string, name?: string}) {
+        super({...opt, type: 'item_modifier'})
     }
+}
+
+export const datapack = {
+    loot_table: (arg: {data?: object, name?: string}) => 
+        new LootTable({...arg, namesp: config.namespace}),
+    item_modifier: (arg: {data?: object, name?: string}) => 
+        new ItemModifier({...arg, namesp: config.namespace}),
+    predicate: (arg: {data?: object, name?: string}) => 
+        new Predicate({...arg, namesp: config.namespace}),
+    tags: tag
 }

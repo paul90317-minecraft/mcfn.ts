@@ -1,7 +1,9 @@
 import { config } from "../config";
 import fs from 'fs'
-import { Command } from "../core/scope";
 import { Scope } from '../core/scope'
+import { FunctionTag } from "../core/tag";
+import { TAG } from "../core/tag";
+import { raw } from "./raw";
 
 export const functions: Record<string, MCFunction> = {}
 
@@ -34,24 +36,17 @@ export class MCFunction extends Scope {
         fs.writeFileSync(`${dir}/${this.name}.mcfunction`, content);
     }
     call() {
-        new Call(this)
+        raw(`function ${this}`)
     }
 }
 
-
-class Call extends Command {
-    private fn: MCFunction;
-    constructor (fn: MCFunction) {
-        super()
-        this.fn = fn;
+export function mcfn(fn: (()=>void) | TAG<MCFunction>[], name?: string) {
+    if (fn instanceof Function) {
+        let mf = new MCFunction(fn, name)
+        let call = mf.call.bind(mf)
+        return Object.assign(call, mf)
     }
-    public toString(): string {
-        return `function ${this.fn}`
-    }
-}
-
-export function mcfn(fn: ()=>void) {
-    let mf = new MCFunction(fn)
-    let fn_call = mf.call.bind(mf)
-    return Object.assign(fn_call, mf)
+    let tags = new FunctionTag(fn, config.namespace, name)
+    let call = tags.call.bind(tags)
+    return Object.assign(call, tags)
 }

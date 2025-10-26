@@ -4,40 +4,45 @@ import { BLOCKS, ENTITY_TYPES, ITEMS } from "../enum"
 import { MCFunction, functions } from "../command/function"
 import fs from 'fs';
 import { config } from "../config";
+import { raw } from "../command";
+import { ENTITY_TYPE_TAG } from "../enum/tag/entity_type";
+import { ITEM_TAG } from "../enum/tag/item";
+import { BLOCK_TAG } from "../enum/tag/block";
 
-type TagRegistry<T> = Record<string, RegistryTag<T>>
+export const registry_tags: Record<string, RegistryTag<any>> = {}
 
-type DP_TAGS = 'entity_type' | 'block' | 'function' | 'item';
+type REGISTRY_TAGS = 'entity_type' | 'block' | 'function' | 'item';
+export type TAG<T> = RegistryTag<T> | T;
 
 export class RegistryTag<T> {
     private name: string
-    protected values: T[]
-    private register: DP_TAGS
+    private values: T[]
+    private type: REGISTRY_TAGS
     private namesp: string
-    protected constructor(register: DP_TAGS, registry: TagRegistry<T>, values: T[], namesp: string, name?: string) {
+    constructor(type: REGISTRY_TAGS, values: T[], namesp: string, name?: string) {
         if (name) {
             if (name[0] === "_")
                 throw new Error("Custom tag starting with _ is not allowed.")
-            if (name in registry)
+            if (name in tag)
                 throw new Error("Duplicated tag declaration.")
             this.name = name
             
         } else {
-            this.name = `_${Object.keys(registry).length}`
+            this.name = `_${Object.keys(tag).length}`
         }
         this.values = values
-        registry[this.name] = this
-        this.register = register
+        registry_tags[type + this] = this
+        this.type = type
         this.namesp = namesp
     }
 
     toString() {
-        return `${this.namesp}:${this.name}`
+        return `#${this.namesp}:${this.name}`
     }
 
     _create() {
         let data = JSON.stringify({ values: this.values.map(v=>`${v}`) })
-        let directory = `${config.outdir}/data/${this.namesp}/tags/${this.register}`
+        let directory = `${config.outdir}/data/${this.namesp}/tags/${this.type}`
         fs.mkdirSync(directory, {
             recursive: true
         })
@@ -45,49 +50,24 @@ export class RegistryTag<T> {
     }
 }
 
-export class EntityTypeTag extends RegistryTag<ENTITY_TYPES | EntityTypeTag> {
-    private static tags: TagRegistry<ENTITY_TYPES | EntityTypeTag> = {}
-    constructor(values: (ENTITY_TYPES | EntityTypeTag)[], name?: string) {
-        super('entity_type', EntityTypeTag.tags, values, config.namespace, name)
-    }
-    static _create() {
-        for(let tag of Object.values(EntityTypeTag.tags))
-            tag._create()
-    }
-}
-
-export class ItemTag extends RegistryTag<ITEMS | ItemTag> {
-    private static tags: TagRegistry<ITEMS | ItemTag> = {}
-    constructor(values: (ITEMS | ItemTag)[], name?: string) {
-        super('item', ItemTag.tags, values, config.namespace, name)
-    }
-    static _create() {
-        for(let tag of Object.values(ItemTag.tags))
-            tag._create()
-    }
-}
-
-export class BlockTag extends RegistryTag<BLOCKS | BlockTag> {
-    static tags: TagRegistry<BLOCKS | BlockTag> = {}
-    constructor(values: (BLOCKS | BlockTag)[], name?: string) {
-        super('block', BlockTag.tags, values, config.namespace, name)
-    }
-    static _create() {
-        for(let tag of Object.values(BlockTag.tags))
-            tag._create()
-    }
-}
-
-export class FunctionTag extends RegistryTag<MCFunction | FunctionTag> {
-    static tags: TagRegistry<MCFunction | FunctionTag> = {}
-    constructor(values: (MCFunction | FunctionTag)[], name?: string) {
-        super('function', FunctionTag.tags, values, config.namespace, name)
-    }
-    static _create() {
-        for(let tag of Object.values(FunctionTag.tags))
-            tag._create()
+export class FunctionTag extends RegistryTag<TAG<MCFunction>> {
+    constructor(values: TAG<MCFunction>[], namesp: string, name?: string) {
+        super('function', values, namesp, name)
     }
     public call() {
-        this.values.forEach(fn=>fn.call())
+        raw(`function ${this}`)
     }
+}
+
+export type ENTITY_TYPE = TAG<ENTITY_TYPES | `#${ENTITY_TYPE_TAG}`>
+export type ITEM = TAG<ITEMS | `#${ITEM_TAG}` | '*'>
+export type BLOCK = TAG<BLOCKS | `#${BLOCK_TAG}`>
+
+export const tag = {
+    entity_type: (values: ENTITY_TYPE[], name?: string) => new RegistryTag<ENTITY_TYPE>(
+        'entity_type', values, config.namespace, name),
+    item: (values: ITEM[], name?: string) => new RegistryTag<ITEM>(
+        'item', values, config.namespace, name),
+    block: (values: BLOCK[], name?: string) => new RegistryTag<BLOCK>(
+        'block', values, config.namespace, name)
 }

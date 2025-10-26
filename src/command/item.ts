@@ -5,13 +5,12 @@
 import { TARGET } from "../type/selector";
 import { Coordinate } from "../type/coord";
 import { ITEM_SLOTS, SLOT_WILDCARD } from "../enum/extend/item_slot";
-import { ITEMS } from "../enum";
 import { COMPONENTS, EXCL_COMPONENTS } from "../enum/extend/component";
 import { NBTBase } from "../type/nbt";
 import { Command } from "../core/scope";
-import { ItemModifer } from "../core/registry";
+import { ItemModifier } from "../core/registry";
 import { Condition } from "../type/condition";
-import { ItemTag } from "../core/tag";
+import { ITEM } from "../core/tag";
 
 export class Slot {
     private target: TARGET | Coordinate
@@ -26,14 +25,14 @@ export class Slot {
                 throw new Error('The slot can not be wildcard when modifying.')
             new ItemReplaceWith(this, item, count)
         },
-        from: (source: Slot, mod?: ItemModifer) => {
+        from: (source: Slot, mod?: ItemModifier) => {
             if(this.slot.at(-1) == '*')
                 throw new Error('The slot can not be wildcard when modifying.')
             new ItemReplaceFrom(this, source, mod)
         }
     }
     
-    public modify(mod: ItemModifer) {
+    public modify(mod: ItemModifier) {
         if(this.slot.at(-1) == '*')
             throw new Error('The slot can not be wildcard when modifying.')
         new ItemModify(this, mod)
@@ -62,8 +61,8 @@ class ItemReplaceWith extends Command {
 class ItemReplaceFrom extends Command {
     private target: Slot
     private source: Slot
-    private mod?: ItemModifer
-    constructor(target: Slot, source: Slot, mod?: ItemModifer) {
+    private mod?: ItemModifier
+    constructor(target: Slot, source: Slot, mod?: ItemModifier) {
         super()
         this.target = target
         this.source = source
@@ -78,8 +77,8 @@ class ItemReplaceFrom extends Command {
 
 class ItemModify extends Command {
     private target: Slot
-    private mod: ItemModifer
-    constructor(target: Slot, mod: ItemModifer) {
+    private mod: ItemModifier
+    constructor(target: Slot, mod: ItemModifier) {
         super()
         this.target = target
         this.mod = mod
@@ -91,9 +90,9 @@ class ItemModify extends Command {
 }
 
 export class Item {
-    private item: ITEMS | '*' | ItemTag
+    private item: ITEM
     private components?: Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>
-    constructor(item: ITEMS, component?: Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>) {
+    constructor(item: ITEM, component?: Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>) {
         this.item = item
         if(component)
             this.components = component
@@ -175,6 +174,6 @@ class Give extends Command {
     }
 }
 
-export const item = Object.assign((it: ITEMS, comp: Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>)=>new Item(it, comp), {
+export const item = Object.assign((it: ITEM, comp: Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>)=>new Item(it, comp), {
     slot: (tar: Coordinate | TARGET, slot: ITEM_SLOTS)=>new Slot(tar, slot)
 })

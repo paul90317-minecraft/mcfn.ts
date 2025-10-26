@@ -2,7 +2,9 @@
   "name": "@paul90317/mcfn.ts",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
   "dependencies": {},
   "scripts": {
@@ -11,8 +13,11 @@
     "dev": "ts-node src/index.ts"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.5.7",
     "@types/node": "^24.8.1",
     "@xmldom/xmldom": "^0.8.11",
+    "adm-zip": "^0.5.16",
+    "axios": "^1.12.2",
     "cheerio": "^1.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",

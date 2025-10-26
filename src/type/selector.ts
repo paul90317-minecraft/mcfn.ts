@@ -1,17 +1,17 @@
 // https://minecraft.wiki/w/Target_selectors
 // https://zh.minecraft.wiki/w/%E5%91%BD%E4%BB%A4/execute?variant=zh-tw
 
-import { EntityTypeTag } from "../core/tag"
+import { TAG } from "../core/tag"
 import { ObjectiveMatches } from "../command/scoreboard/objective"
 import { EntityTag } from "../command/tag"
-import { ENTITY_TYPES } from "../enum"
+import { ENTITY_TYPE } from "../core/tag"
 import { Bound } from "./bound"
 import { NBTCompound, NBTBase } from "./nbt"
 
 type SELECTORS = '@s' | '@r' | '@p' | '@a' | '@e' | '@n'
 
 interface SelectFilter {
-    types?: (EntityTypeTag | ENTITY_TYPES)[]
+    types?: ENTITY_TYPE[]
     distance?: {lower?: number, upper?: number},
     scores?: ObjectiveMatches[]
     tags?: EntityTag[]

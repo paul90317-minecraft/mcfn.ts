@@ -1,17 +1,17 @@
 // https://minecraft.fandom.com/wiki/Commands/fill
-import { Command } from "../core/scope";
+import { Command } from "../../core/scope";
 import { Block } from "./block"; // 假設 Block 類別來自 setblock 實作 [3]
-import { Coordinate } from "../type/coord";
+import { Coordinate } from "../../type/coord";
 
-type FILL_MODE = 'destroy' | 'hollow' | 'keep' | 'outline' | 'strict';
-type REPLACE_MODE = 'destroy' | 'hollow' | 'outline' | 'strict';
+export type FILL_MODE = 'destroy' | 'hollow' | 'keep' | 'outline' | 'strict';
+export type REPLACE_MODE = 'destroy' | 'hollow' | 'outline' | 'strict';
 
-class BlockFill extends Command {
+export class BlockFill extends Command {
     constructor(
         private from: Coordinate,
         private to: Coordinate,
         private block: Block, 
-        private mode: FILL_MODE 
+        private mode?: FILL_MODE 
     ) {
         super();
     }
@@ -27,7 +27,7 @@ class BlockFill extends Command {
     }
 }
 
-class BlockReplace extends Command {
+export class BlockReplace extends Command {
     constructor(
         private from: Coordinate,
         private to: Coordinate,
@@ -50,15 +50,3 @@ class BlockReplace extends Command {
         return command;
     }
 }
-
-function _fill(from: Coordinate, to: Coordinate, block: Block, mode: FILL_MODE) {
-    new BlockFill(from, to, block, mode)
-}
-
-function _replace(from: Coordinate, to: Coordinate, block: Block, filter: Block, mode: REPLACE_MODE) {
-    new BlockReplace(from, to, block, filter, mode)
-}
-
-export const fill = Object.assign(_fill, {
-    replace: _replace
-})
