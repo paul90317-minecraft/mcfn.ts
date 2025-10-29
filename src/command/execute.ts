@@ -100,7 +100,7 @@ class StoreScore {
 
     }
     public toString() {
-        return `store ${this.source} ${this.target}`
+        return `store ${this.source} score ${this.target}`
     }
 }
 
@@ -113,7 +113,7 @@ class StoreBossbar {
 
     }
     public toString() {
-        return `store ${this.source} ${this.bar} ${this.attr}`
+        return `store ${this.source} bossbar ${this.bar} ${this.attr}`
     }
 }
 
