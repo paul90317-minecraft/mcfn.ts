@@ -15,6 +15,7 @@ export { title } from "./title"
 export { loot } from "./loot"
 export { effect } from "./effect"
 export { playsound } from "./playsound"
+export { damage, damage_at } from './damage'
 export { block, Block } from "./block"
 export { tp } from "./tp"
 export { raw } from "./raw"
