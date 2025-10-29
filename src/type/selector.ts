@@ -7,6 +7,7 @@ import { EntityTag } from "../command/tag"
 import { ENTITY_TYPE } from "../core/tag"
 import { Bound } from "./bound"
 import { NBTCompound, NBTBase } from "./nbt"
+import { Team } from "../command/team"
 
 type SELECTORS = '@s' | '@r' | '@p' | '@a' | '@e' | '@n'
 
@@ -20,6 +21,11 @@ interface SelectFilter {
     sort?: 'arbitrary' | 'furthest' | 'nearest' | 'random'
     nbt?: NBTCompound<Record<string, NBTBase>>
     excl_nbt?: NBTCompound<Record<string, NBTBase>>
+    team?: Team,
+    excl_teams?: Team[],
+    dx?: number,
+    dy?: number,
+    dz?: number
 }
 
 export class Selector {
