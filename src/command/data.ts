@@ -14,7 +14,7 @@ export abstract class Data {
     /**
      * 返回新的 Data 實例（不會改動舊的 paths）
      */
-    public at(key: string | NBTCompound<Record<string, NBTBase>> | number): this {
+    public at(key: string | NBTCompound<Record<string, NBTBase>> | number): Data {
         let nextKey: string;
         if (key instanceof NBTBase || typeof key === 'number') {
             nextKey = `[${key}]`;
@@ -25,7 +25,7 @@ export abstract class Data {
         }
 
         // 建立新的 Data 子類實例（this.constructor 可維持動態類別）
-        const next = new (this.constructor as new (paths: string[]) => this)([
+        const next = this._clone([
             ...this.paths,
             nextKey,
         ]);
@@ -63,39 +63,50 @@ export abstract class Data {
     public toString() {
         return this.paths.length ? this.paths.join('.') : '{}';
     }
+
+    protected abstract  _clone(paths: string[]): Data
 }
 
 
 class EntityData extends Data {
     private target: TARGET
-    constructor(target: TARGET) {
-        super()
+    constructor(target: TARGET, paths: string[] = []) {
+        super(paths)
         this.target = target
     }
     public toString(): string {
         return `entity ${this.target} ${super.toString()}`
     }
+    protected _clone(paths: string[]) {
+        return new EntityData(this.target, paths)
+    }
 }
 
 class StorageData extends Data {
     private storage: string
-    constructor(storage: string) {
-        super()
+    constructor(storage: string, paths: string[] = []) {
+        super(paths)
         this.storage = storage
     }
     public toString(): string {
         return `storage ${config.namespace}:${this.storage} ${super.toString()}`
     }
+    protected _clone(paths: string[]) {
+        return new StorageData(this.storage, paths)
+    }
 }
 
 class BlockData extends Data {
     private pos: Coordinate
-    constructor(pos: Coordinate) {
-        super()
+    constructor(pos: Coordinate, paths: string[] = []) {
+        super(paths)
         this.pos = pos
     }
     public toString(): string {
         return `block ${this.pos} ${super.toString()}`
+    }
+    protected _clone(paths: string[]) {
+        return new BlockData(this.pos, paths)
     }
 }
 
