@@ -87,12 +87,13 @@ class StoreData {
     constructor(
         private source: 'success' | 'result',
         private target: Data,
-        private tp: DATA_TYPES
+        private type: DATA_TYPES,
+        private scale: number
     ) {
 
     }
     public toString() {
-        return `store ${this.source} ${this.target} ${this.tp}`
+        return `store ${this.source} ${this.target} ${this.type} ${this.scale}`
     }
 }
 class StoreScore {
@@ -133,8 +134,8 @@ class Control {
 
     public store(source: 'success' | 'result') {
         return {
-            data: (target: Data, type: DATA_TYPES) =>
-                this.next(new StoreData(source, target, type)),
+            data: (target: Data, type: DATA_TYPES, scale: number) =>
+                this.next(new StoreData(source, target, type, scale)),
             score: (score: Score) =>
                 this.next(new StoreScore(source, score)),
             bossbar: (bossbar: BossBar, attr: 'max' | 'value') =>

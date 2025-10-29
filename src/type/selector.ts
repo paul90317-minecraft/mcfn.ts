@@ -12,7 +12,7 @@ import { Team } from "../command/team"
 type SELECTORS = '@s' | '@r' | '@p' | '@a' | '@e' | '@n'
 
 interface SelectFilter {
-    types?: ENTITY_TYPE[]
+    type?: ENTITY_TYPE
     distance?: {lower?: number, upper?: number},
     scores?: ObjectiveMatches[]
     tags?: EntityTag[]
@@ -49,7 +49,6 @@ export class Selector {
         temp = this.filter.scores?.map(s=>`${s.objective}=${s.bound}`).join(',')
         if(temp)
             filters.push(`scores={${temp}}`)
-        temp = this.filter.types?.map(t=>`type=${t}`).join(',')
         if(temp)
             filters.push(temp)
         if(this.filter.distance)
@@ -62,6 +61,14 @@ export class Selector {
             filters.push(`nbt=${this.filter.nbt}`)
         if(this.filter.excl_nbt)
             filters.push(`nbt=!${this.filter.excl_nbt}`)
+        if(this.filter.dx)
+            filters.push(`dx=${this.filter.dx}`)
+        if(this.filter.dy)
+            filters.push(`dy=${this.filter.dy}`)
+        if(this.filter.dz)
+            filters.push(`dz=${this.filter.dz}`)
+        if(this.filter.type)
+            filters.push(`type=${this.filter.type}`)
         return `${this.target}[${filters.join(',')}]`
     }
 }
