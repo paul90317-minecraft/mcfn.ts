@@ -118,73 +118,70 @@ class StoreBossbar {
 }
 
 class Control {
-    private arguments: (If | Unless | As | At | Positioned | Summon | In | On | StoreData | StoreScore | StoreBossbar)[];
-    public constructor() {
-        this.arguments = [];
+    private readonly args: (
+        If | Unless | As | At | Positioned | Summon | In | On | StoreData | StoreScore | StoreBossbar
+    )[];
+
+    constructor(args: Control["args"] = []) {
+        this.args = [...args];
     }
 
-    public store(source: 'success' | 'result'): {
-        data: (target: Data, type: DATA_TYPES) => Control;
-        score: (score: Score) => Control;
-        bossbar: (bossbar: BossBar, attr: 'max' | 'value') => Control;
-    }  {
+    /** Immutable push helper */
+    private next(arg: Control["args"][number]): Control {
+        return new Control([...this.args, arg]);
+    }
+
+    public store(source: 'success' | 'result') {
         return {
-            data: (target: Data, type: DATA_TYPES) => {
-                this.arguments.push(new StoreData(source, target, type))
-                return this;
-            },
-            score: (score: Score) => {
-                this.arguments.push(new StoreScore(source, score))
-                return this;
-            },
-            bossbar: (bossbar: BossBar, attr: 'max' | 'value') => {
-                this.arguments.push(new StoreBossbar(source, bossbar, attr))
-                return this;
-            }
-        }
+            data: (target: Data, type: DATA_TYPES) =>
+                this.next(new StoreData(source, target, type)),
+            score: (score: Score) =>
+                this.next(new StoreScore(source, score)),
+            bossbar: (bossbar: BossBar, attr: 'max' | 'value') =>
+                this.next(new StoreBossbar(source, bossbar, attr))
+        };
     }
 
     public as(entity: TARGET) {
-        this.arguments.push(new As(entity))
-        return this
+        return this.next(new As(entity));
     }
-    
+
     public at(entity: TARGET) {
-        this.arguments.push(new At(entity))
-        return this
+        return this.next(new At(entity));
     }
-    public if (condition: Condition) {
-        this.arguments.push(new If(condition))
-        return this
+
+    public if(condition: IF_ARGS) {
+        return this.next(new If(condition));
     }
 
     public unless(condition: IF_ARGS) {
-        this.arguments.push(new Unless(condition))
-        return this
+        return this.next(new Unless(condition));
     }
+
     public positioned(position: Coordinate) {
-        this.arguments.push(new Positioned(position))
-        return this
+        return this.next(new Positioned(position));
     }
+
     public summon(entity: ENTITY_TYPES) {
-        this.arguments.push(new Summon(entity))
-        return this
+        return this.next(new Summon(entity));
     }
+
     public in(dim: DIMENSIONS) {
-        this.arguments.push(new In(dim))
-        return this
+        return this.next(new In(dim));
     }
-    public on (rel: RELATION) {
-        this.arguments.push(new On(rel))
+
+    public on(rel: RELATION) {
+        return this.next(new On(rel));
     }
-    
-    public run(fn: MCFunction): void
-    public run(fn: ()=>void, inline?: boolean): void
-    public run(fn: (()=>void) | MCFunction, inline = false) {
-        new Execute(this, fn, inline)
+
+    public run(fn: MCFunction): void;
+    public run(fn: () => void, inline?: boolean): void;
+    public run(fn: (() => void) | MCFunction, inline = false) {
+        new Execute(this, fn, inline);
     }
+
     public toString() {
-        return this.arguments.join(' ')
+        return this.args.join(' ');
     }
 }
 

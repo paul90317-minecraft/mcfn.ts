@@ -5,48 +5,66 @@ import { TARGET } from "../type/selector"
 import { config } from "../config"
 
 export abstract class Data {
-    protected paths: string[]
-    constructor() {
-        this.paths = []
+    protected readonly paths: string[];
+
+    constructor(paths: string[] = []) {
+        this.paths = [...paths];
     }
-    public at(key: string | NBTCompound<Record<string,NBTBase>> | number) {
-        if(key instanceof NBTBase || typeof key === 'number') {
-            this.paths.push(`[${key}]`)
-            return this
+
+    /**
+     * 返回新的 Data 實例（不會改動舊的 paths）
+     */
+    public at(key: string | NBTCompound<Record<string, NBTBase>> | number): this {
+        let nextKey: string;
+        if (key instanceof NBTBase || typeof key === 'number') {
+            nextKey = `[${key}]`;
+        } else {
+            if (!/^[A-Za-z0-9_]+$/.test(key))
+                throw new Error('Wrong format of data path.');
+            nextKey = key;
         }
 
-        if(!/^[A-Za-z0-9_]+$/.test(key))
-            throw new Error('Wrong format of data path.')
-        this.paths.push(key)
-        return this
+        // 建立新的 Data 子類實例（this.constructor 可維持動態類別）
+        const next = new (this.constructor as new (paths: string[]) => this)([
+            ...this.paths,
+            nextKey,
+        ]);
+        return next;
     }
+
     public merge(source: Data | NBTBase) {
-        new DataModify('merge', this, source)
+        new DataModify('merge', this, source);
     }
+
     public set(source: Data | NBTBase) {
-        new DataModify('set', this, source)
+        new DataModify('set', this, source);
     }
+
     public append(source: Data | NBTBase) {
-        new DataModify('append', this, source)
+        new DataModify('append', this, source);
     }
+
     public prepend(source: Data | NBTBase) {
-        new DataModify('prepend', this, source)
+        new DataModify('prepend', this, source);
     }
+
     public insert(source: Data | NBTBase, index: number) {
-        new DataModify('insert', this, source, index)
+        new DataModify('insert', this, source, index);
     }
+
     public remove() {
-        new DataModify('remove', this)
+        new DataModify('remove', this);
     }
+
     public get() {
-        new DataModify('get', this)
+        new DataModify('get', this);
     }
+
     public toString() {
-        if(this.paths.length)
-            return this.paths.join('.')
-        return '{}'
+        return this.paths.length ? this.paths.join('.') : '{}';
     }
 }
+
 
 class EntityData extends Data {
     private target: TARGET
