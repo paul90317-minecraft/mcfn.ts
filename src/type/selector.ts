@@ -23,6 +23,9 @@ interface SelectFilter {
     excl_nbt?: NBTCompound<Record<string, NBTBase>>
     team?: Team,
     excl_teams?: Team[],
+    x?: number,
+    y?: number,
+    z?: number
     dx?: number,
     dy?: number,
     dz?: number
@@ -75,6 +78,15 @@ export class Selector {
         
         if(this.filter.dz)
             filters.push(`dz=${this.filter.dz}`)
+        
+        if(this.filter.x)
+            filters.push(`x=${this.filter.x}`)
+        
+        if(this.filter.y)
+            filters.push(`y=${this.filter.y}`)
+        
+        if(this.filter.z)
+            filters.push(`z=${this.filter.z}`)
         
         if(this.filter.type)
             filters.push(`type=${this.filter.type}`)
