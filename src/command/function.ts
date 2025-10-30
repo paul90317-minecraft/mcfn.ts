@@ -44,11 +44,7 @@ export function mcfn(fn: (()=>void), name?: string): MCFunction & (() => void)
 export function mcfn(fn: TAG<MCFunction>[], name?: string): FunctionTag & (() => void)
 export function mcfn(fn: (()=>void) | TAG<MCFunction>[], name?: string) {
     if (fn instanceof Function) {
-        let mf = new MCFunction(fn, name)
-        let call = mf.call.bind(mf)
-        return Object.assign(call, mf)
+        return new MCFunction(fn, name)
     }
-    let tags = new FunctionTag(fn, config.namespace, name)
-    let call = tags.call.bind(tags)
-    return Object.assign(call, tags)
+    return new FunctionTag(fn, config.namespace, name)
 }

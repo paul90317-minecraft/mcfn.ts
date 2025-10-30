@@ -35,17 +35,17 @@ class Particle extends Command {
     public toString(): string {
         // 核心語法: particle <name> <pos> <delta> <speed> <count> [1]
         let command = `particle ${this.name}`;
-        if (this.pos)
+        if (this.pos !== undefined)
             command += ` ${this.pos}`
-        if (this.delta)
+        if (this.delta !== undefined)
             command += ` ${this.delta}`
-        if (this.speed)
+        if (this.speed !== undefined)
             command += ` ${this.speed}`
-        if (this.count)
+        if (this.count !== undefined)
             command += ` ${this.count}`
-        if (this.mode)
+        if (this.mode !== undefined)
             command += ` ${this.mode}`;
-        if (this.viewers)
+        if (this.viewers !== undefined)
             command += ` ${this.viewers}`;
         return command;
     }

@@ -43,32 +43,42 @@ export class Selector {
         let temp = this.filter.tags?.map(t=>`tag=${t}`).join(',')
         if(temp)
             filters.push(temp)
-        temp = this.filter.excl_tags?.map(t=>`tag=${t}`).join(',')
+
+        temp = this.filter.excl_tags?.map(t=>`tag=!${t}`).join(',')
         if(temp)
             filters.push(temp)
+
         temp = this.filter.scores?.map(s=>`${s.objective}=${s.bound}`).join(',')
         if(temp)
             filters.push(`scores={${temp}}`)
-        if(temp)
-            filters.push(temp)
+        
         if(this.filter.distance)
             filters.push(`distance=${new Bound(this.filter.distance)}`)
+
         if(this.filter.limit)
             filters.push(`limit=${this.filter.limit}`)
+        
         if(this.filter.sort)
             filters.push(`sort=${this.filter.sort}`)
+        
         if(this.filter.nbt)
             filters.push(`nbt=${this.filter.nbt}`)
+        
         if(this.filter.excl_nbt)
             filters.push(`nbt=!${this.filter.excl_nbt}`)
+        
         if(this.filter.dx)
             filters.push(`dx=${this.filter.dx}`)
+        
         if(this.filter.dy)
             filters.push(`dy=${this.filter.dy}`)
+        
         if(this.filter.dz)
             filters.push(`dz=${this.filter.dz}`)
+        
         if(this.filter.type)
             filters.push(`type=${this.filter.type}`)
+        
         return `${this.target}[${filters.join(',')}]`
     }
 }

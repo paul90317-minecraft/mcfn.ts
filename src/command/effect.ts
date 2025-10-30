@@ -40,16 +40,14 @@ class Effect extends Command {
 
 export const effect = {
     give: (
-        action: 'give' | 'clear',
         targets: TARGET,
         effect?: MOB_EFFECTS,
         seconds?: EffectDuration,
         amplifier?: number,
         hideParticles?: boolean
-    ) => new Effect(targets, action, effect, seconds, amplifier, hideParticles),
+    ) => new Effect(targets, 'give', effect, seconds, amplifier, hideParticles),
     clear: (
-        action: 'give' | 'clear',
         targets: TARGET,
         effect?: MOB_EFFECTS,
-    ) => new Effect(targets, action, effect)
+    ) => new Effect(targets, 'clear', effect)
 }

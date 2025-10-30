@@ -79,7 +79,5 @@ class CreateObjective extends Command {
 
 
 export function objective(criteria: OBJECTIVE_CRITERION = 'dummy', name?: string) {
-    let o = new Objective(criteria, name)
-    let fn = o.get.bind(o) 
-    return Object.assign(fn, o)
+    return new Objective(criteria, name)
 }

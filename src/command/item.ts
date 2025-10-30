@@ -91,8 +91,8 @@ class ItemModify extends Command {
 
 export class Item {
     private item: ITEM
-    private components?: Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>
-    constructor(item: ITEM, component?: Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>) {
+    private components?: Partial<Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>>
+    constructor(item: ITEM, component?: Partial<Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>>) {
         this.item = item
         if(component)
             this.components = component
@@ -174,6 +174,6 @@ class Give extends Command {
     }
 }
 
-export const item = Object.assign((it: ITEM, comp?: Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>)=>new Item(it, comp), {
+export const item = Object.assign((it: ITEM, comp?: Partial< Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>>)=>new Item(it, comp), {
     slot: (tar: Coordinate | TARGET, slot: ITEM_SLOTS)=>new Slot(tar, slot)
 })
