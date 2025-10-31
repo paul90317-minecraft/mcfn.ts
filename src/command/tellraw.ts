@@ -1,8 +1,8 @@
 // http://minecraft.fandom.com/wiki/Commands/title
 import { TARGET } from "../type/selector";
 import { raw } from "./raw";
-import { Text } from "../type/nbt";
+import { NBTText } from "../type/nbt";
 
-export function tellraw(target: TARGET, message: Text | Text[]) {
+export function tellraw(target: TARGET, message: NBTText) {
     raw(`tellraw ${target} ${message}`)
 }

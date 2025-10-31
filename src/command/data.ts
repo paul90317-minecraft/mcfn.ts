@@ -19,7 +19,7 @@ export abstract class Data {
         if (key instanceof NBTBase || typeof key === 'number') {
             nextKey = `[${key}]`;
         } else {
-            if (!/^[A-Za-z0-9_]+$/.test(key))
+            if (!/^[A-Za-z0-9_\:]+$/.test(key))
                 throw new Error('Wrong format of data path.');
             nextKey = key;
         }

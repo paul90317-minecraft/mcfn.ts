@@ -1,6 +1,6 @@
 import { config } from "../config";
 import { Command } from "../core/scope";
-import { Text } from "../type/nbt";
+import { NBTText } from "../type/nbt";
 import { TARGET } from "../type/selector";
 
 export type BOSSBAR_COLOR = 
@@ -129,7 +129,7 @@ export class BossBar {
   }
 }
 
-export const bossbar = Object.assign((name: Text[] | Text, id?: string)=> {
+export const bossbar = Object.assign((name: NBTText, id?: string)=> {
     return new BossBar(`${name}`, id)
 }, {
   list: (): void => { new ListBossbarCommand() }

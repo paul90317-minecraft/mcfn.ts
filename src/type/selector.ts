@@ -1,7 +1,6 @@
 // https://minecraft.wiki/w/Target_selectors
 // https://zh.minecraft.wiki/w/%E5%91%BD%E4%BB%A4/execute?variant=zh-tw
 
-import { TAG } from "../core/tag"
 import { ObjectiveMatches } from "../command/scoreboard/objective"
 import { EntityTag } from "../command/tag"
 import { ENTITY_TYPE } from "../core/tag"
@@ -9,7 +8,7 @@ import { Bound } from "./bound"
 import { NBTCompound, NBTBase } from "./nbt"
 import { Team } from "../command/team"
 
-type SELECTORS = '@s' | '@r' | '@p' | '@a' | '@e' | '@n'
+export type SELECTORS = '@s' | '@r' | '@p' | '@a' | '@e' | '@n'
 
 interface SelectFilter {
     type?: ENTITY_TYPE

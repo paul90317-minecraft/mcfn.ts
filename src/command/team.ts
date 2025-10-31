@@ -5,14 +5,14 @@
 import { TARGET } from "../type/selector"
 import { config } from "../config"
 import { raw } from "./raw"
-import { Text } from "../type/nbt"
+import { NBTText } from "../type/nbt"
 
 export const teams: Record<string, Team> = {}
 
 export class Team {
     private id: string
     private name?: string
-    constructor(opt?: {name?: Text | Text[], id?:string}) {
+    constructor(opt?: {name?: NBTText, id?:string}) {
         const {id, name} = opt ?? {}
         if (id) {
             if (id[0] === "_")
@@ -81,18 +81,18 @@ type COLOR_CODES =
 
   type VISIBLE = 'never' | 'hideForOtherTeams' | 'hideForOwnTeam' | 'always'
 type TEAM_MOD = {
-    displayName?: Text | Text[]
+    displayName?: NBTText
     color?: COLOR_CODES,
     friendlyFire?: boolean,
     seeFriendlyInvisibles?: boolean,
     nametagVisibility?: VISIBLE
     deathMessageVisibility?: VISIBLE
     collisionRule?: 'always' | 'never' | 'pushOtherTeams' | 'pushOwnTeam'
-    prefix?: Text | Text[],
-    suffix?: Text | Text[]
+    prefix?: NBTText,
+    suffix?: NBTText
 }
 
-export function team(opt?: {name?: Text | Text[], id?:string}) {
+export function team(opt?: {name?: NBTText, id?:string}) {
     return new Team(opt)
 }
 

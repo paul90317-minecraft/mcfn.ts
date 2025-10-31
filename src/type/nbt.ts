@@ -35,13 +35,13 @@ export class NBTFloat extends NBTBase {
 
 export class NBTDouble extends NBTBase {
   constructor(public value: number) { super(); }
-  toString() { return `${this.value}`; }
+  toString() { return `${this.value}d`; }
 }
 
 export class NBTString<T extends string> extends NBTBase {
   constructor(public value: T) { super(); }
   toString() {
-    return `\"${this.value}\"`;
+    return `'${this.value}'`;
   }
 }
 
@@ -77,7 +77,7 @@ export class NBTCompound<T extends Record<string, NBTBase>> extends NBTBase {
   constructor(public value: T) { super(); }
   toString() {
     const entries = Object.entries(this.value)
-      .map(([k, v]) => `${k}:${v.toString()}`)
+      .map(([k, v]) => `'${k}':${v.toString()}`)
       .join(',');
     return `{${entries}}`;
   }
@@ -112,19 +112,19 @@ type FORMAT_KEYS =
   | 'underline'
   | 'italic';
 
-type TEXT = {
+type NBT_TEXT = {
   text: NBTString<string>,
   color?: NBTString<COLOR_CODES>,
 } & Partial<Record<FORMAT_KEYS, NBTByte>>
 
-type _TEXT = {
+export type TEXT = {
   text: string,
   color?: COLOR_CODES,
 } & Partial<Record<FORMAT_KEYS, boolean>>
 
-export class Text extends NBTCompound<TEXT> {
+export class NBTText extends NBTCompound<NBT_TEXT> {
   constructor(
-    _text: _TEXT
+    _text: TEXT
   ) {
     const { text, color, ...formats } = _text;
 
@@ -155,5 +155,5 @@ export const nbt = {
   double: (x: number) => new NBTDouble(x),
   float: (x: number) => new NBTFloat(x),
   string: (x: string) => new NBTString(x),
-  text: (_name: _TEXT) => new Text(_name)
+  text: (_name: TEXT) => new NBTText(_name)
 }

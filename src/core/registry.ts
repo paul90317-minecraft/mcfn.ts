@@ -6,7 +6,7 @@ import { config } from "../config"
 import fs from 'fs';
 import { tag } from './tag'
 
-type  REGISTRY_NAME = 'loot_table' | 'item_modifier' | 'predicate'
+type  REGISTRY_NAME = 'loot_table' | 'item_modifier' | 'predicate' | 'recipe'
 
 export const registries: Record<string, Registry> = {}
 
@@ -65,6 +65,12 @@ export class ItemModifier extends Registry {
     }
 }
 
+export class Recipe extends Registry {
+    constructor(opt: {data?: object, namesp: string, name?: string}) {
+        super({...opt, type: 'recipe'})
+    }
+}
+
 export const datapack = {
     loot_table: (arg: {data?: object, name?: string}) => 
         new LootTable({...arg, namesp: config.namespace}),
@@ -72,5 +78,7 @@ export const datapack = {
         new ItemModifier({...arg, namesp: config.namespace}),
     predicate: (arg: {data?: object, name?: string}) => 
         new Predicate({...arg, namesp: config.namespace}),
+    recipe: (arg: {data?: object, name?: string}) =>
+        new Recipe({...arg, namesp: config.namespace}),
     tags: tag
 }
