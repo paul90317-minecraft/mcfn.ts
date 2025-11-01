@@ -16,23 +16,22 @@ export class Registry {
     private name: string
     private data?: object
     private namesp: string
-    constructor(arg: {type: REGISTRY_NAME, data?: object, namesp: string, name?: string}) {
-        this.type = arg.type
-        if(!arg.name && !arg.data)
-            throw new Error(`${arg.type} name and data is not allowed to be zero at the same time.`)
-        if(arg.name) {
-            if(arg.name[0] === '_')
-                throw new Error(`${arg.type} name started with _ is not allowed.`)
-            if(arg.name in registries)
-                throw new Error(`Duplicated ${arg.type} name ${arg.name}.`)
-            this.name = arg.name
+    constructor(type: REGISTRY_NAME, data: object, namesp: string, name?: string) {
+        this.type = type
+        this.data = data
+        this.namesp = namesp
+        if(name) {
+            if(name[0] === '_')
+                throw new Error(`${type} name started with _ is not allowed.`)
+            if(name in registries)
+                throw new Error(`Duplicated ${type} name ${name}.`)
+            this.name = name
         } else {
             this.name = `_${Object.keys(registries).length}`
         }
         registries[`${this.type}/${this}`] = this
-        this.namesp = arg.namesp
-        if(arg.data)
-            this.data = arg.data
+        this.namesp = namesp
+        this.data = data
     }
     public _create() {
         if(!this.data)
@@ -49,37 +48,37 @@ export class Registry {
 }
 
 export class LootTable extends Registry {
-    constructor(opt: {data?: object, namesp: string, name?: string}) {
-        super({...opt, type: 'loot_table'})
+    constructor(data: object, namesp: string, name?: string) {
+        super('loot_table', data, namesp, name)
     }
 }
 
 export class Predicate extends Registry {
-    constructor(opt: {data?: object, namesp: string, name?: string}) {
-        super({...opt, type: 'predicate'})
+    constructor(data: object, namesp: string, name?: string) {
+        super('predicate', data, namesp, name)
     }
 }
 
 export class ItemModifier extends Registry {
-    constructor(opt: {data?: object, namesp: string, name?: string}) {
-        super({...opt, type: 'item_modifier'})
+    constructor(data: object, namesp: string, name?: string) {
+        super('item_modifier', data, namesp, name)
     }
 }
 
 export class Recipe extends Registry {
-    constructor(opt: {data?: object, namesp: string, name?: string}) {
-        super({...opt, type: 'recipe'})
+    constructor(data: object, namesp: string, name?: string) {
+        super('recipe', data, namesp, name)
     }
 }
 
 export const datapack = {
-    loot_table: (arg: {data?: object, name?: string}) => 
-        new LootTable({...arg, namesp: config.namespace}),
-    item_modifier: (arg: {data?: object, name?: string}) => 
-        new ItemModifier({...arg, namesp: config.namespace}),
-    predicate: (arg: {data?: object, name?: string}) => 
-        new Predicate({...arg, namesp: config.namespace}),
-    recipe: (arg: {data?: object, name?: string}) =>
-        new Recipe({...arg, namesp: config.namespace}),
+    loot_table: (data: object, name?: string) => 
+        new LootTable(data, config.namespace, name),
+    item_modifier: (data: object, name?: string) => 
+        new ItemModifier(data, config.namespace, name),
+    predicate: (data: object, name?: string) => 
+        new Predicate(data, config.namespace, name),
+    recipe: (data: object, name?: string) =>
+        new Recipe(data, config.namespace, name),
     tags: tag
 }
