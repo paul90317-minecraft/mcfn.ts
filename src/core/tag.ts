@@ -8,6 +8,7 @@ import { raw } from "../command";
 import { ENTITY_TYPE_TAG } from "../enum/tag/entity_type";
 import { ITEM_TAG } from "../enum/tag/item";
 import { BLOCK_TAG } from "../enum/tag/block";
+import { object_to_string } from "../util";
 
 export const registry_tags: Record<string, RegistryTag<any>> = {}
 
@@ -41,7 +42,7 @@ export class RegistryTag<T> {
     }
 
     _create() {
-        let data = JSON.stringify({ values: this.values.map(v=>`${v}`) })
+        let data = object_to_string({ values: this.values.map(v => `${v}`) })
         let directory = `${config.datapack.outdir}/data/${this.namesp}/tags/${this.type}`
         fs.mkdirSync(directory, {
             recursive: true

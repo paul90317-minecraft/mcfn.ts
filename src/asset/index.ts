@@ -4,6 +4,7 @@ import { item_models, ItemModel } from './item'
 import { Equipment, equipments } from './equipment'
 import { config } from '../config'
 import fs from 'fs'
+import { object_to_string } from '../util'
 
 export * from './model'
 export * from './texture'
@@ -23,7 +24,7 @@ export const resourcepack = {
         fs.mkdirSync(config.resourcepack.outdir ,{
             recursive: true
         })
-        fs.writeFileSync(`${config.resourcepack.outdir}/pack.mcmeta`, JSON.stringify(config.resourcepack.mcmeta))
+        fs.writeFileSync(`${config.resourcepack.outdir}/pack.mcmeta`, object_to_string(config.resourcepack.mcmeta))
         
         Object.values(item_models).forEach(t => t._create())
         Object.values(item_textures).forEach(t => t._create())

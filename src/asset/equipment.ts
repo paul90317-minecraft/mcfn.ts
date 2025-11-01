@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { config } from '../config';
+import { object_to_string } from '../util';
 
 export const equipments: Record<string, Equipment> = {}
 
@@ -22,7 +23,7 @@ export class Equipment {
         fs.mkdirSync(dir, {
             recursive: true
         })
-        fs.writeFileSync(dir + `${this.name}.json`, JSON.stringify(this.data))
+        fs.writeFileSync(dir + `${this.name}.json`, object_to_string(this.data))
     }
     toString() {
         return `${config.namespace}:${this.name}`

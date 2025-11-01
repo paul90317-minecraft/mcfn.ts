@@ -5,6 +5,7 @@
 import { config } from "../config"
 import fs from 'fs';
 import { tag } from './tag'
+import { object_to_string } from "../util";
 
 type  REGISTRY_NAME = 'loot_table' | 'item_modifier' | 'predicate' | 'recipe'
 
@@ -40,7 +41,7 @@ export class Registry {
         fs.mkdirSync(dir, {
             recursive: true
         })
-        fs.writeFileSync(`${dir}/${this.name}.json`, JSON.stringify(this.data))
+        fs.writeFileSync(`${dir}/${this.name}.json`, object_to_string(this.data))
     }
     public toString() {
         return `${this.namesp}:${this.name}`

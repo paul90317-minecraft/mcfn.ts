@@ -8,6 +8,7 @@ import { bossbars } from "../command/bossbar";
 import { teams } from "../command/team";
 import { FunctionTag, registry_tags } from './tag';
 import { item_models, models, item_textures, resourcepack } from "../asset";
+import { object_to_string } from "../util";
 
 let tick: MCFunction | undefined;
 let load: MCFunction | undefined;
@@ -55,7 +56,7 @@ process.on('exit', ()=>{
     fs.mkdirSync(config.datapack.outdir ,{
         recursive: true
     })
-    fs.writeFileSync(`${config.datapack.outdir}/pack.mcmeta`, JSON.stringify(config.datapack.mcmeta))
+    fs.writeFileSync(`${config.datapack.outdir}/pack.mcmeta`, object_to_string(config.datapack.mcmeta))
 
     // create datapack files
     Object.values(registry_tags).forEach(tag=>{

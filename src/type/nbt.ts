@@ -154,6 +154,6 @@ export const nbt = {
   llong: (x: number[]) => new NBTLongArray(x),
   double: (x: number) => new NBTDouble(x),
   float: (x: number) => new NBTFloat(x),
-  string: (x: string) => new NBTString(x),
+  string: (x: any) => new NBTString(`${x}`),
   text: (_name: TEXT) => new NBTText(_name)
 }
