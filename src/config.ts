@@ -2,12 +2,23 @@ import fs from 'fs'
 
 type CONFIG = {
     namespace: string
-    outdir: string
-    mcmeta: {
-        pack: {
-            description?: string
-            pack_format: number
+    datapack: {
+        mcmeta: {
+            pack: {
+                description?: string
+                pack_format: number,
+            }
         }
+        outdir: string
+    },
+    resourcepack: {
+        mcmeta: {
+            pack: {
+                description?: string
+                pack_format: number,
+            }
+        }
+        outdir: string
     }
 }
 

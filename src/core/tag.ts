@@ -42,7 +42,7 @@ export class RegistryTag<T> {
 
     _create() {
         let data = JSON.stringify({ values: this.values.map(v=>`${v}`) })
-        let directory = `${config.outdir}/data/${this.namesp}/tags/${this.type}`
+        let directory = `${config.datapack.outdir}/data/${this.namesp}/tags/${this.type}`
         fs.mkdirSync(directory, {
             recursive: true
         })

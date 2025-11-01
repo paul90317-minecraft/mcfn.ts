@@ -28,7 +28,7 @@ export class MCFunction extends Scope {
     }
 
     _create() {
-        let dir = `${config.outdir}/data/${config.namespace}/function`
+        let dir = `${config.datapack.outdir}/data/${config.namespace}/function`
         fs.mkdirSync(dir, {
             recursive: true
         })

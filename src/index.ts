@@ -3,3 +3,4 @@ export * from "./command"
 export * from "./core"
 export * from "./enum"
 export * from "./config"
+export * from './asset'

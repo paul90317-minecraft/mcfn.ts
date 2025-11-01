@@ -36,7 +36,7 @@ export class Registry {
     public _create() {
         if(!this.data)
             return;
-        let dir = `${config.outdir}/data/${this.namesp}/${this.type}`
+        let dir = `${config.datapack.outdir}/data/${this.namesp}/${this.type}`
         fs.mkdirSync(dir, {
             recursive: true
         })

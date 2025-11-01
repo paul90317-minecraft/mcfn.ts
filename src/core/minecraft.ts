@@ -3,17 +3,21 @@ import { MCFunction, functions } from "../command/function"
 import { config } from "../config";
 import fs from 'fs'
 import { objectives } from "../command/scoreboard/objective";
-import { LootTable, registries, Registry } from "./registry";
+import { datapack, LootTable, registries, Registry } from "./registry";
 import { bossbars } from "../command/bossbar";
 import { teams } from "../command/team";
 import { FunctionTag, registry_tags } from './tag';
-
+import { item_models, models, item_textures, resourcepack } from "../asset";
 
 let tick: MCFunction | undefined;
 let load: MCFunction | undefined;
 
-if(config.mcmeta.pack.pack_format !== 88) {
-    throw new Error(`The pack format ${config.mcmeta.pack.pack_format} is not supported.`)
+if(config.datapack.mcmeta.pack.pack_format !== 88) {
+    throw new Error(`The pack format ${config.datapack.mcmeta.pack.pack_format} of datapack is not supported.`)
+}
+
+if(config.resourcepack.mcmeta.pack.pack_format !== 69) {
+    throw new Error(`The pack format ${config.datapack.mcmeta.pack.pack_format} of resoucepack is not supported.`)
 }
 
 export const minecraft = {
@@ -30,11 +34,7 @@ export const minecraft = {
 }
 
 process.on('exit', ()=>{
-    fs.mkdirSync(config.outdir ,{
-        recursive: true
-    })
-    fs.writeFileSync(`${config.outdir}/pack.mcmeta`, JSON.stringify(config.mcmeta))
-    
+    // build the AST tree root
     if(load || Object.keys(objectives).length)
         new FunctionTag([
             new MCFunction(()=>{
@@ -50,7 +50,14 @@ process.on('exit', ()=>{
             tick
         ], 'minecraft', 'tick')._create()
     }
+    
+    // create datapack folder
+    fs.mkdirSync(config.datapack.outdir ,{
+        recursive: true
+    })
+    fs.writeFileSync(`${config.datapack.outdir}/pack.mcmeta`, JSON.stringify(config.datapack.mcmeta))
 
+    // create datapack files
     Object.values(registry_tags).forEach(tag=>{
         tag._create()
     })
@@ -62,5 +69,7 @@ process.on('exit', ()=>{
     Object.values(functions).forEach(fn=>{
         fn._create()
     })
-
+    
+    // create resoucepack
+    resourcepack._create()
 })

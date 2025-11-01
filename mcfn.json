@@ -1,10 +1,21 @@
 {
-    "namespace": "spm",
-    "outdir": "out",
-    "mcmeta": {
-        "pack": {
-            "description": "Special Mobs",
-            "pack_format": 88
-        }
+    "namespace": "example",
+    "datapack": {
+        "mcmeta": {
+            "pack": {
+                "description": "Example Datapack",
+                "pack_format": 88
+            }
+        },
+        "outdir": "out/datapack"
+    },
+    "resourcepack": {
+        "mcmeta": {
+            "pack": {
+                "description": "Example Resource Pack",
+                "pack_format": 69
+            }
+        },
+        "outdir": "out/resourcepack"
     }
 }
