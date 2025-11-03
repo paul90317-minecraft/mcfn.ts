@@ -1,6 +1,7 @@
 // https://minecraft.fandom.com/wiki/NBT_format
 
 export abstract class NBTBase {
+  __nbt_base = true
   abstract toString(): string
 }
 

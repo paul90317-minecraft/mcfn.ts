@@ -34,7 +34,7 @@ export const minecraft = {
     },
 }
 
-process.on('exit', ()=>{
+function emit() {
     // build the AST tree root
     if(load || Object.keys(objectives).length)
         new FunctionTag([
@@ -73,4 +73,12 @@ process.on('exit', ()=>{
     
     // create resoucepack
     resourcepack._create()
+}
+
+process.on('exit', ()=>{
+    try {
+        emit()
+    } catch(e) {
+        console.log(e)
+    }
 })

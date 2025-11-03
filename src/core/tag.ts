@@ -17,19 +17,19 @@ export type TAG<T> = RegistryTag<T> | T;
 
 export class RegistryTag<T> {
     private name: string
-    private values: T[]
+    private values: readonly T[]
     private type: REGISTRY_TAGS
     private namesp: string
-    constructor(type: REGISTRY_TAGS, values: T[], namesp: string, name?: string) {
+    constructor(type: REGISTRY_TAGS, values: readonly T[], namesp: string, name?: string) {
         if (name) {
             if (name[0] === "_")
                 throw new Error("Custom tag starting with _ is not allowed.")
-            if (name in tag)
+            if (name in tags)
                 throw new Error("Duplicated tag declaration.")
             this.name = name
             
         } else {
-            this.name = `_${Object.keys(tag).length}`
+            this.name = `_${Object.keys(tags).length}`
         }
         this.values = values
         registry_tags[type + this] = this
@@ -64,11 +64,11 @@ export type ENTITY_TYPE = TAG<ENTITY_TYPES | `#${ENTITY_TYPE_TAG}`>
 export type ITEM = TAG<ITEMS | `#${ITEM_TAG}` | '*'>
 export type BLOCK = TAG<BLOCKS | `#${BLOCK_TAG}`>
 
-export const tag = {
-    entity_type: (values: ENTITY_TYPE[], name?: string) => new RegistryTag<ENTITY_TYPE>(
+export const tags = {
+    entity_type: (values: readonly ENTITY_TYPE[], name?: string) => new RegistryTag<ENTITY_TYPE>(
         'entity_type', values, config.namespace, name),
-    item: (values: ITEM[], name?: string) => new RegistryTag<ITEM>(
+    item: (values: readonly ITEM[], name?: string) => new RegistryTag<ITEM>(
         'item', values, config.namespace, name),
-    block: (values: BLOCK[], name?: string) => new RegistryTag<BLOCK>(
+    block: (values: readonly BLOCK[], name?: string) => new RegistryTag<BLOCK>(
         'block', values, config.namespace, name)
 }

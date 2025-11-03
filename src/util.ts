@@ -37,8 +37,10 @@ export function object_to_string(obj: object): string {
         return `[${x.join(',')}]`
     }
     let entries = Object.entries(obj).map(([k, v]) => {
+        if(v === undefined)
+            return undefined
         return `"${k}":${helper(v)}`;
-    })
+    }).filter(kv => kv !== undefined)
     return `{${entries.join(',')}}`;
 }
 

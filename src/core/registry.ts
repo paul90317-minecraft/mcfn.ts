@@ -4,7 +4,7 @@
 
 import { config } from "../config"
 import fs from 'fs';
-import { tag } from './tag'
+import { tags } from './tag'
 import { object_to_string } from "../util";
 
 type  REGISTRY_NAME = 'loot_table' | 'item_modifier' | 'predicate' | 'recipe'
@@ -14,7 +14,7 @@ export const registries: Record<string, Registry> = {}
 export class Registry {
     private type: REGISTRY_NAME
     private name: string
-    private data?: object
+    private data: object
     private namesp: string
     constructor(type: REGISTRY_NAME, data: object, namesp: string, name?: string) {
         this.type = type
@@ -34,8 +34,6 @@ export class Registry {
         this.data = data
     }
     public _create() {
-        if(!this.data)
-            return;
         let dir = `${config.datapack.outdir}/data/${this.namesp}/${this.type}`
         fs.mkdirSync(dir, {
             recursive: true
@@ -80,5 +78,5 @@ export const datapack = {
         new Predicate(data, config.namespace, name),
     recipe: (data: object, name?: string) =>
         new Recipe(data, config.namespace, name),
-    tags: tag
+    tags
 }

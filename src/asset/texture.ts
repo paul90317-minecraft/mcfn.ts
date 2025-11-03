@@ -5,7 +5,7 @@ export const textures: Record<string, Texture> = {}
 
 export class Texture {
     private name: string
-    constructor(private path: string, private folder: string = '', name_prefix: string = '', name?: string) {
+    constructor(private path: string, private folder: string = '', private prefix: string = '', name?: string) {
         if(name) {
             if(name[0] == '_')
                 throw new Error('Texture name started with _ is not allowed.')
@@ -14,7 +14,7 @@ export class Texture {
         } else {
             name = `_${Object.keys(textures).length}`
         }
-        this.name = name_prefix + name
+        this.name = name
         textures[`${folder}/${name}`] = this
     }
     _create() {
@@ -26,13 +26,13 @@ export class Texture {
         fs.copyFileSync(this.path, dir + `${this.name}.${ext}`)
     }
     toString() {
-        return `${config.namespace}:${this.name}`
+        return `${config.namespace}:${this.prefix}${this.name}`
     }
 }
 
 export class ItemTexture extends Texture {
     constructor(path: string, name?: string) {
-        super(path, 'item/', 'item/' + name)
+        super(path, 'item/', 'item/', name)
     }
 }
 
@@ -47,7 +47,7 @@ export const texture = {
     item(path: string, name?: string) {
         return new ItemTexture(path, name)
     },
-    humanoid(type: EQUIPMENTS, path: string, name?: string) {
+    equipment(type: EQUIPMENTS, path: string, name?: string) {
         return new EquipmentTexture(type, path, name)
     }
 }

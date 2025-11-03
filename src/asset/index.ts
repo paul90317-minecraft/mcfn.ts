@@ -25,7 +25,7 @@ export const resourcepack = {
             recursive: true
         })
         fs.writeFileSync(`${config.resourcepack.outdir}/pack.mcmeta`, object_to_string(config.resourcepack.mcmeta))
-        
+
         Object.values(item_models).forEach(t => t._create())
         Object.values(textures).forEach(t => t._create())
         Object.values(models).forEach(t => t._create())

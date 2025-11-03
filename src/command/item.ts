@@ -99,7 +99,7 @@ export class Item {
     }
     public toString() {
         if(this.components === undefined)
-            return this.item
+            return `${this.item}`
         let temp = Object.entries(this.components!)
             .map(([k, v]) => `${k}=${v}`)
             .join(',');
