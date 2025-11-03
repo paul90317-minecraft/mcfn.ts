@@ -1,52 +1,24 @@
 import fs from 'fs';
 import { config } from '../config';
 
-export const item_textures: Record<string, ItemTexture> = {}
-export const humanoid_textures: Record<string, HumanoidTexture> = {}
+export const textures: Record<string, Texture> = {}
 
-export class ItemTexture {
+export class Texture {
     private name: string
-    constructor(private path: string, name?: string) {
+    constructor(private path: string, private folder: string = '', name_prefix: string = '', name?: string) {
         if(name) {
             if(name[0] == '_')
                 throw new Error('Texture name started with _ is not allowed.')
-            if(name in item_textures)
+            if(name in textures)
                 throw new Error('Duplicated texture name is not allowed.')
         } else {
-            name = `_${Object.keys(item_textures).length}`
+            name = `_${Object.keys(textures).length}`
         }
-        this.name = name
-        item_textures[name] = this
+        this.name = name_prefix + name
+        textures[`${folder}/${name}`] = this
     }
     _create() {
-        const dir = `${config.resourcepack.outdir}/assets/${config.namespace}/textures/item/`
-        fs.mkdirSync(dir, {
-            recursive: true
-        })
-        const ext = this.path.split('.').at(-1)
-        fs.copyFileSync(this.path, dir + `${this.name}.${ext}`)
-    }
-    toString() {
-        return `${config.namespace}:item/${this.name}`
-    }
-}
-
-export class HumanoidTexture {
-    private name: string
-    constructor(private path: string, name?: string) {
-        if(name) {
-            if(name[0] == '_')
-                throw new Error('Texture name started with _ is not allowed.')
-            if(name in humanoid_textures)
-                throw new Error('Duplicated texture name is not allowed.')
-        } else {
-            name = `_${Object.keys(humanoid_textures).length}`
-        }
-        this.name = name
-        humanoid_textures[name] = this
-    }
-    _create() {
-        const dir = `${config.resourcepack.outdir}/assets/${config.namespace}/textures/entity/equipment/humanoid/`
+        const dir = `${config.resourcepack.outdir}/assets/${config.namespace}/textures/` + this.folder
         fs.mkdirSync(dir, {
             recursive: true
         })
@@ -58,11 +30,24 @@ export class HumanoidTexture {
     }
 }
 
+export class ItemTexture extends Texture {
+    constructor(path: string, name?: string) {
+        super(path, 'item/', 'item/' + name)
+    }
+}
+
+type EQUIPMENTS = 'humanoid' | 'humanoid_leggings' | 'wings';
+export class EquipmentTexture extends Texture {
+    constructor(type: EQUIPMENTS, path: string, name?: string) {
+        super(path, `entity/equipment/${type}/`, '', name)
+    }
+}
+
 export const texture = {
     item(path: string, name?: string) {
         return new ItemTexture(path, name)
     },
-    humanoid(path: string, name?: string) {
-        return new HumanoidTexture(path, name)
+    humanoid(type: EQUIPMENTS, path: string, name?: string) {
+        return new EquipmentTexture(type, path, name)
     }
 }

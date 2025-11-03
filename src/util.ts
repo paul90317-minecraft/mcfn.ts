@@ -1,10 +1,10 @@
-import { HumanoidTexture, ItemModel, ItemTexture, Model } from "./asset"
+import { EquipmentTexture, ItemModel, ItemTexture, Model } from "./asset"
 import { Equipment } from "./asset/equipment"
 import { ItemModifier, LootTable, Predicate, Recipe, Registry } from "./core/registry"
 import { RegistryTag } from "./core/tag"
 import { NBTBase } from "./type"
 
-type CUSTOM_TYPES = Registry | RegistryTag<any> | ItemTexture | Equipment | HumanoidTexture | ItemModel | Model | NBTBase | ItemModifier | LootTable | Predicate | Recipe
+type CUSTOM_TYPES = Registry | RegistryTag<any> | ItemTexture | Equipment | EquipmentTexture | ItemModel | Model | NBTBase | ItemModifier | LootTable | Predicate | Recipe
 
 type OBJECT_TYPES = string | number | boolean | object | CUSTOM_TYPES
 export function object_to_string(obj: object): string {
@@ -14,7 +14,7 @@ export function object_to_string(obj: object): string {
             x instanceof RegistryTag ||
             x instanceof ItemTexture ||
             x instanceof Equipment ||
-            x instanceof HumanoidTexture ||
+            x instanceof EquipmentTexture ||
             x instanceof ItemModel ||
             x instanceof Model ||
             x instanceof NBTBase ||

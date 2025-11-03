@@ -1,5 +1,5 @@
 import { Model, models } from './model'
-import { humanoid_textures, item_textures, texture } from './texture'
+import { textures, texture } from './texture'
 import { item_models, ItemModel } from './item'
 import { Equipment, equipments } from './equipment'
 import { config } from '../config'
@@ -27,8 +27,7 @@ export const resourcepack = {
         fs.writeFileSync(`${config.resourcepack.outdir}/pack.mcmeta`, object_to_string(config.resourcepack.mcmeta))
         
         Object.values(item_models).forEach(t => t._create())
-        Object.values(item_textures).forEach(t => t._create())
-        Object.values(humanoid_textures).forEach(t => t._create())
+        Object.values(textures).forEach(t => t._create())
         Object.values(models).forEach(t => t._create())
         Object.values(equipments).forEach(t => t._create())
     },
