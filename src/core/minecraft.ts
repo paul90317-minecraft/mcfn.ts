@@ -58,6 +58,12 @@ function emit() {
     })
     fs.writeFileSync(`${config.datapack.outdir}/pack.mcmeta`, object_to_string(config.datapack.mcmeta))
 
+    if (config.datapack.icon)
+        fs.copyFileSync(
+            config.datapack.icon,
+            `${config.datapack.outdir}/${config.datapack.icon.split(/[\\/]/).pop()}`
+        );
+
     // create datapack files
     Object.values(registry_tags).forEach(tag=>{
         tag._create()

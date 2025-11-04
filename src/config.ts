@@ -8,7 +8,8 @@ type CONFIG = {
                 description?: string
                 pack_format: number,
             }
-        }
+        },
+        icon?: string
         outdir: string
     },
     resourcepack: {
@@ -17,7 +18,8 @@ type CONFIG = {
                 description?: string
                 pack_format: number,
             }
-        }
+        },
+        icon?: string
         outdir: string
     }
 }
