@@ -8,7 +8,7 @@ import { raw } from "../command";
 import { ENTITY_TYPE_TAG } from "../enum/tag/entity_type";
 import { ITEM_TAG } from "../enum/tag/item";
 import { BLOCK_TAG } from "../enum/tag/block";
-import { object_to_string } from "../util";
+import { object_to_string } from "../type";
 
 export const registry_tags: Record<string, RegistryTag<any>> = {}
 

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { config } from '../config';
-import { object_to_string } from '../util';
+import { object_to_string } from '../type';
 
 export const equipments: Record<string, Equipment> = {}
 

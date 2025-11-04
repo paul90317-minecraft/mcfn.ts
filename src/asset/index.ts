@@ -4,7 +4,7 @@ import { item_models, ItemModel } from './item'
 import { Equipment, equipments } from './equipment'
 import { config } from '../config'
 import fs from 'fs'
-import { object_to_string } from '../util'
+import { object_to_string } from '../type'
 
 export * from './model'
 export * from './texture'
