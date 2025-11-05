@@ -90,30 +90,34 @@ class ItemModify extends Command {
 }
 
 type ItemComponent = Partial<Record<DataComponentTypeID, NBTBase>>
-type ItemComponentWithExclusion = ItemComponent & {excl?: ItemComponent}
+type ItemComponents = {excl?: ItemComponent, incl?: ItemComponent}
 
 export class Item {
     private item: ItemTypeRef
-    private components?: ItemComponent
-    private excl_components?: ItemComponent
-    constructor(item: ItemTypeRef, components?: ItemComponentWithExclusion) {
+    private components?: ItemComponents
+    constructor(item: ItemTypeRef, components?: ItemComponents) {
         this.item = item
         if(components) {
             this.components = components
-            if(components.excl)
-                this.excl_components = components
         }
-            
     }
     public toString() {
         if(this.components === undefined)
             return `${this.item}`
-        let components = Object.entries(this.components!)
-            .map(([k, v]) => `${k}=${v}`)
-            .join(',');
-        let excl_components = Object.entries(this.excl_components!)
-            .map(([k, v]) => `!${k}=${v}`)
-        return `${this.item}[${[...components, ...excl_components].join(',')}]`
+        let components: string[] = []
+        if(this.components.incl)
+            components.push(
+                Object.entries(this.components.incl)
+                .map(([k, v]) => `${k}=${v}`)
+                .join(',')
+            )
+        if(this.components.excl) 
+           components.push(
+                Object.entries(this.components.excl)
+                .map(([k, v]) => `${k}=${v}`)
+                .join(',')
+            )
+        return `${this.item}[${components.join(',')}]`
     }
     public clear(target?: TARGET, maxCount?: number) {
         new Clear(target, this, maxCount)
@@ -184,6 +188,6 @@ class Give extends Command {
     }
 }
 
-export const item = Object.assign((it: ItemTypeRef, comp?: ItemComponentWithExclusion)=>new Item(it, comp), {
+export const item = Object.assign((it: ItemTypeRef, comp?: ItemComponents)=>new Item(it, comp), {
     slot: (tar: Vec3 | TARGET, slot: ItemSlotID)=>new Slot(tar, slot)
 })
