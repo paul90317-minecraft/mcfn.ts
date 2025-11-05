@@ -1,0 +1,130 @@
+// https://minecraft.fandom.com/wiki/NBT_format
+
+import { ColorID } from "../mcmeta/command_argument_type";
+import { FormatID } from "./json_object";
+import { TextObject } from './json_object'
+
+export abstract class NBTBase {
+  __nbt_base = true
+  abstract toString(): string
+}
+
+export class NBTByte extends NBTBase {
+  constructor(public value: number | boolean) { super(); }
+  toString() {
+    if (typeof this.value === "boolean")
+      return this.value ? "1b" : "0b";
+    return `${BigInt(this.value)}b`;
+  }
+}
+
+export class NBTShort extends NBTBase {
+  constructor(public value: number) { super(); }
+  toString() { return `${BigInt(this.value)}s`; }
+}
+
+export class NBTInt extends NBTBase {
+  constructor(public value: number) { super(); }
+  toString() { return `${BigInt(this.value)}`; }
+}
+
+export class NBTLong extends NBTBase {
+  constructor(public value: number) { super(); }
+  toString() { return `${BigInt(this.value)}l`; }
+}
+
+export class NBTFloat extends NBTBase {
+  constructor(public value: number) { super(); }
+  toString() { return `${this.value}f`; }
+}
+
+export class NBTDouble extends NBTBase {
+  constructor(public value: number) { super(); }
+  toString() { return `${this.value}d`; }
+}
+
+export class NBTString<T extends string> extends NBTBase {
+  constructor(public value: T) { super(); }
+  toString() {
+    return `'${this.value}'`;
+  }
+}
+
+export class NBTByteArray extends NBTBase {
+  constructor(public values: (number| boolean)[]) { super(); }
+  toString() {
+    return `[B;${this.values.map(v => `${BigInt(v)}b`).join(',')}]`;
+  }
+}
+
+export class NBTIntArray extends NBTBase {
+  constructor(public values: number[]) { super(); }
+  toString() {
+    return `[I;${this.values.map(v => `${BigInt(v)}`).join(',')}]`;
+  }
+}
+
+export class NBTLongArray extends NBTBase {
+  constructor(public values: number[]) { super(); }
+  toString() {
+    return `[L;${this.values.map(v => `${BigInt(v)}l`).join(',')}]`;
+  }
+}
+
+export class NBTList<T extends NBTBase> extends NBTBase {
+  constructor(public values: T[]) { super(); }
+  toString() {
+    return `[${this.values.map(v => v.toString()).join(',')}]`;
+  }
+}
+
+export class NBTCompound<T extends Record<string, NBTBase>> extends NBTBase {
+  constructor(public value: T) { super(); }
+  toString() {
+    const entries = Object.entries(this.value)
+      .map(([k, v]) => `'${k}':${v.toString()}`)
+      .join(',');
+    return `{${entries}}`;
+  }
+}
+
+type NBTTextInner = {
+  text: NBTString<string>,
+  color?: NBTString<ColorID>,
+} & Partial<Record<FormatID, NBTByte>>
+
+export class NBTText extends NBTCompound<NBTTextInner> {
+  constructor(
+    _text: TextObject
+  ) {
+    const { text, color, ...formats } = _text;
+
+    const nbtFormats: Partial<Record<FormatID, NBTByte>> = {};
+    for (const key in formats) {
+      if (formats[key as FormatID] !== undefined) {
+        nbtFormats[key as FormatID] = new NBTByte(Number(formats[key as FormatID]));
+      }
+    }
+    super({
+      text: new NBTString(text),
+      ...(color !== undefined && { color: new NBTString(color) }),
+      ...nbtFormats
+    });
+  }
+}
+
+export const nbt = {
+  byte: (x: number | boolean) => new NBTByte(x),
+  short: (x: number) => new NBTShort(x),
+  int: (x: number) => new NBTInt(x),
+  long: (x: number) => new NBTLong(x),
+  list: <T extends NBTBase>(x: T[]) => new NBTList(x),
+  compound: <T extends Record<string, NBTBase>>(x: T) => new NBTCompound(x),
+  lbyte: (x: (number | boolean)[]) => new NBTByteArray(x),
+  lint: (x: number[]) => new NBTIntArray(x),
+  llong: (x: number[]) => new NBTLongArray(x),
+  double: (x: number) => new NBTDouble(x),
+  float: (x: number) => new NBTFloat(x),
+  string: (x: any) => new NBTString(`${x}`),
+  text: (_name: TextObject) => new NBTText(_name)
+}

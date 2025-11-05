@@ -3,10 +3,10 @@
 
 // 假設的類型引用，參考自其他指令實作 [1, 2]
 import { Command } from "../../core/scope";
-import { Coordinate } from "../../type/coord";
-import { NBTBase, NBTCompound } from "../../type/nbt";
-import { Condition } from "../../type/condition";
-import { BLOCK } from "../../core/tag";
+import { Vec3 } from "../../arg/vec3";
+import { NBTBase, NBTCompound } from "../../arg/nbt";
+import { Condition } from "../../arg/condition";
+import { BlockRef } from "../../core/tag";
 import { BlockFill, BlockReplace, FILL_MODE, REPLACE_MODE } from "./fill";
 
 // 處理 setblock 指令模式
@@ -14,7 +14,7 @@ export type SETBLOCK_MODE = 'destroy' | 'keep' | 'replace' | 'strict';
 
 export class Block {
     constructor(
-        private block: BLOCK,
+        private block: BlockRef,
         private state?: Record<string, string>,
         private entity_tags?: NBTCompound<Record<string, NBTBase>>
     ) {
@@ -30,23 +30,23 @@ export class Block {
         return b
     }
 
-    public replace(from: Coordinate, to: Coordinate, filter?: Block, mode?: REPLACE_MODE) {
+    public replace(from: Vec3, to: Vec3, filter?: Block, mode?: REPLACE_MODE) {
         new BlockReplace(from, to, this, filter, mode)
     }
-    public fill(from: Coordinate, to: Coordinate, mode?: FILL_MODE) {
+    public fill(from: Vec3, to: Vec3, mode?: FILL_MODE) {
         new BlockFill(from, to, this, mode)
     }
-    set(pos: Coordinate, mode?: SETBLOCK_MODE) {
+    set(pos: Vec3, mode?: SETBLOCK_MODE) {
         new Setblock(pos, this, mode);
     }
 
-    matches(pos: Coordinate) {
+    matches(pos: Vec3) {
         return new BlockMatch(pos, this)
     }
 }
 
 class BlockMatch extends Condition {
-    constructor(public pos: Coordinate, public block: Block) {
+    constructor(public pos: Vec3, public block: Block) {
         super()
     }
     public toString(): string {
@@ -56,7 +56,7 @@ class BlockMatch extends Condition {
 
 class Setblock extends Command {
     constructor(
-        private pos: Coordinate, // 必須是 block_pos [3]
+        private pos: Vec3, // 必須是 block_pos [3]
         private block: Block,    // 必須包含 block_id[block_states]{data_tags} [4]
         private mode?: SETBLOCK_MODE
     ) {
@@ -78,7 +78,7 @@ class Setblock extends Command {
 }
 
 export function block(
-    block: BLOCK, state?: Record<string, string>, entity_tags?: NBTCompound<Record<string, NBTBase>>
+    block: BlockRef, state?: Record<string, string>, entity_tags?: NBTCompound<Record<string, NBTBase>>
 ) {
     return new Block(block, state, entity_tags)
 }

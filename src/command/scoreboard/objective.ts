@@ -1,8 +1,8 @@
 // https://minecraft.fandom.com/wiki/Scoreboard
 
-import { OBJECTIVE_CRITERION } from '../../enum/criterion'
-import { TARGET } from '../../type/selector'
-import { Bound } from '../../type/bound'
+import { ObjectiveCriterionID } from '../../mcmeta/command_argument_type/objective_criteria'
+import { TARGET } from '../../arg/selector'
+import { NumberRange } from '../../arg/range'
 import { Command } from '../../core/scope'
 import { Score } from './score'
 import { config } from '../../config'
@@ -11,17 +11,17 @@ export const objectives: Record<string, Objective> = {}
 
 export class ObjectiveMatches {
     public readonly objective: Objective
-    public readonly bound: Bound
-    constructor(objective: Objective, bound: Bound) {
+    public readonly bound: NumberRange
+    constructor(objective: Objective, bound: NumberRange) {
         this.objective = objective
         this.bound = bound
     }
 }
 
 export class Objective {
-    public readonly criteria: OBJECTIVE_CRITERION
+    public readonly criteria: ObjectiveCriterionID
     private name_: string
-    constructor (criteria: OBJECTIVE_CRITERION = 'dummy', name?: string) {
+    constructor (criteria: ObjectiveCriterionID = 'dummy', name?: string) {
         this.criteria = criteria
         if(name) {
             this.name_ = name
@@ -38,10 +38,10 @@ export class Objective {
         return new Score(this, target)
     }
     public matches(bound: {lower?: number, upper?: number}) {
-        return new ObjectiveMatches(this, new Bound(bound))
+        return new ObjectiveMatches(this, new NumberRange(bound))
     }
     public between(lower: number, upper: number) {
-        return new ObjectiveMatches(this, new Bound({lower, upper}))
+        return new ObjectiveMatches(this, new NumberRange({lower, upper}))
     }
     public lt(x: number) {
         return new ObjectiveMatches(this, {upper: x - 1})
@@ -78,6 +78,6 @@ class CreateObjective extends Command {
 } 
 
 
-export function objective(criteria: OBJECTIVE_CRITERION = 'dummy', name?: string) {
+export function objective(criteria: ObjectiveCriterionID = 'dummy', name?: string) {
     return new Objective(criteria, name)
 }

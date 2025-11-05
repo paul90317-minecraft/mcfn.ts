@@ -5,7 +5,7 @@
 import { config } from "../config"
 import fs from 'fs';
 import { tags } from './tag'
-import { object_to_string } from "../type";
+import { object_to_string } from "../arg";
 
 type  REGISTRY_NAME = 'loot_table' | 'item_modifier' | 'predicate' | 'recipe'
 

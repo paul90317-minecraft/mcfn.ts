@@ -1,9 +1,9 @@
 // https://minecraft.wiki/w/Commands/playsound
 
 import { Command } from "../core/scope"; 
-import { Coordinate } from "../type/coord";
-import { TARGET } from "../type/selector"; 
-import { SOUND_EVENTS } from "../enum"; // 引入使用者提供的 SOUND_EVENTS
+import { Vec3 } from "../arg/vec3";
+import { TARGET } from "../arg/selector"; 
+import { SoundEventID } from "../mcmeta"; // 引入使用者提供的 SOUND_EVENTS
 
 /**
  * 定義 Minecraft Java Edition 的音效分類 (source)。
@@ -39,10 +39,10 @@ class Playsound extends Command {
      * @param minVolume 可選，目標在正常聽覺範圍外時的最小音量（必須介於 0.0 和 1.0 之間，包含）[6]。
      */
     constructor(
-        private sound: SOUND_EVENTS, // 使用 SOUND_EVENTS 替代 string
+        private sound: SoundEventID, // 使用 SOUND_EVENTS 替代 string
         private source?: SOUND_SOURCES,
         private targets?: TARGET,
-        private pos?: Coordinate,
+        private pos?: Vec3,
         private volume?: number,
         private pitch?: number,
         private minVolume?: number
@@ -99,42 +99,42 @@ class Playsound extends Command {
  */
 
 // 形式 1: 僅指定音效事件 ID
-export function playsound(sound: SOUND_EVENTS): void;
+export function playsound(sound: SoundEventID): void;
 
 // 形式 2: 指定音效事件 ID 和分類 (source)
-export function playsound(sound: SOUND_EVENTS, source: SOUND_SOURCES): void;
+export function playsound(sound: SoundEventID, source: SOUND_SOURCES): void;
 
 // 形式 3: 指定音效事件 ID、分類和目標 (targets)
-export function playsound(sound: SOUND_EVENTS, source: SOUND_SOURCES, targets: TARGET): void;
+export function playsound(sound: SoundEventID, source: SOUND_SOURCES, targets: TARGET): void;
 
 // 形式 4: 指定音效事件 ID、分類、目標和位置 (pos)
-export function playsound(sound: SOUND_EVENTS, source: SOUND_SOURCES, targets: TARGET, pos: Coordinate): void;
+export function playsound(sound: SoundEventID, source: SOUND_SOURCES, targets: TARGET, pos: Vec3): void;
 
 // 形式 5: 包含音量 (volume)
 export function playsound(
-    sound: SOUND_EVENTS, 
+    sound: SoundEventID, 
     source: SOUND_SOURCES, 
     targets: TARGET, 
-    pos: Coordinate, 
+    pos: Vec3, 
     volume: number
 ): void;
 
 // 形式 6: 包含音高 (pitch)
 export function playsound(
-    sound: SOUND_EVENTS, 
+    sound: SoundEventID, 
     source: SOUND_SOURCES, 
     targets: TARGET, 
-    pos: Coordinate, 
+    pos: Vec3, 
     volume: number, 
     pitch: number
 ): void;
 
 // 形式 7: 完整語法，包含最小音量 (minimumVolume)
 export function playsound(
-    sound: SOUND_EVENTS, 
+    sound: SoundEventID, 
     source: SOUND_SOURCES, 
     targets: TARGET, 
-    pos: Coordinate, 
+    pos: Vec3, 
     volume: number, 
     pitch: number, 
     minVolume: number
@@ -143,10 +143,10 @@ export function playsound(
 
 // 實現函數
 export function playsound(
-    a: SOUND_EVENTS, // 現在強型別為 SOUND_EVENTS
+    a: SoundEventID, // 現在強型別為 SOUND_EVENTS
     b?: SOUND_SOURCES,
     c?: TARGET,
-    d?: Coordinate,
+    d?: Vec3,
     e?: number,
     f?: number,
     g?: number

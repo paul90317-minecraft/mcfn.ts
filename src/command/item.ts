@@ -2,20 +2,20 @@
 // https://minecraft.wiki/w/Data_component_format#List_of_components
 // https://minecraft.fandom.com/wiki/Commands/clear
 
-import { TARGET } from "../type/selector";
-import { Coordinate } from "../type/coord";
-import { ITEM_SLOTS, SLOT_WILDCARD } from "../enum/extend/item_slot";
-import { COMPONENTS, EXCL_COMPONENTS } from "../enum/extend/component";
-import { NBTBase } from "../type/nbt";
+import { TARGET } from "../arg/selector";
+import { Vec3 } from "../arg/vec3";
+import { ItemSlotID } from "../mcmeta/command_argument_type/item_slot";
+import { DataComponentTypeID } from "../mcmeta";
+import { NBTBase } from "../arg/nbt";
 import { Command } from "../core/scope";
 import { ItemModifier } from "../core/registry";
-import { Condition } from "../type/condition";
-import { ITEM } from "../core/tag";
+import { Condition } from "../arg/condition";
+import { ItemTypeRef } from "../core/tag";
 
 export class Slot {
-    private target: TARGET | Coordinate
-    private slot: ITEM_SLOTS | SLOT_WILDCARD
-    constructor(target: TARGET | Coordinate, slot: ITEM_SLOTS) {
+    private target: TARGET | Vec3
+    private slot: ItemSlotID
+    constructor(target: TARGET | Vec3, slot: ItemSlotID) {
         this.target = target
         this.slot = slot
     }
@@ -41,7 +41,7 @@ export class Slot {
         return new ItemMatch(this, item)
     }
     public toString() {
-        let prefix = (this.target instanceof Coordinate ? 'block' : 'entity') 
+        let prefix = (this.target instanceof Vec3 ? 'block' : 'entity') 
         return `${prefix} ${this.target} ${this.slot}`
     }
 }
@@ -89,21 +89,31 @@ class ItemModify extends Command {
     }
 }
 
+type ItemComponent = Partial<Record<DataComponentTypeID, NBTBase>>
+type ItemComponentWithExclusion = ItemComponent & {excl?: ItemComponent}
+
 export class Item {
-    private item: ITEM
-    private components?: Partial<Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>>
-    constructor(item: ITEM, component?: Partial<Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>>) {
+    private item: ItemTypeRef
+    private components?: ItemComponent
+    private excl_components?: ItemComponent
+    constructor(item: ItemTypeRef, components?: ItemComponentWithExclusion) {
         this.item = item
-        if(component)
-            this.components = component
+        if(components) {
+            this.components = components
+            if(components.excl)
+                this.excl_components = components
+        }
+            
     }
     public toString() {
         if(this.components === undefined)
             return `${this.item}`
-        let temp = Object.entries(this.components!)
+        let components = Object.entries(this.components!)
             .map(([k, v]) => `${k}=${v}`)
             .join(',');
-        return `${this.item}[${temp}]`
+        let excl_components = Object.entries(this.excl_components!)
+            .map(([k, v]) => `!${k}=${v}`)
+        return `${this.item}[${[...components, ...excl_components].join(',')}]`
     }
     public clear(target?: TARGET, maxCount?: number) {
         new Clear(target, this, maxCount)
@@ -174,6 +184,6 @@ class Give extends Command {
     }
 }
 
-export const item = Object.assign((it: ITEM, comp?: Partial< Record<COMPONENTS | EXCL_COMPONENTS, NBTBase>>)=>new Item(it, comp), {
-    slot: (tar: Coordinate | TARGET, slot: ITEM_SLOTS)=>new Slot(tar, slot)
+export const item = Object.assign((it: ItemTypeRef, comp?: ItemComponentWithExclusion)=>new Item(it, comp), {
+    slot: (tar: Vec3 | TARGET, slot: ItemSlotID)=>new Slot(tar, slot)
 })

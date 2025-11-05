@@ -1,6 +1,6 @@
 import { Command } from "../core/scope";
-import { Coordinate } from "../type/coord";
-import { TARGET } from "../type/selector";
+import { Vec3 } from "../arg/vec3";
+import { TARGET } from "../arg/selector";
 
 
 

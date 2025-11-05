@@ -1,6 +1,6 @@
 // https://minecraft.wiki/w/Commands/tag
 
-import { TARGET } from "../type/selector"
+import { TARGET } from "../arg/selector"
 import { Command } from "../core/scope"
 import { config } from "../config"
 

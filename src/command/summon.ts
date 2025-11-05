@@ -1,9 +1,9 @@
 // https://minecraft.wiki/w/Commands/summon
 
 import { Command } from "../core/scope";
-import { Coordinate } from "../type/coord"; 
-import { ENTITY_TYPES } from "../enum"; 
-import { NBTBase, NBTCompound } from "../type/nbt";
+import { Vec3 } from "../arg/vec3"; 
+import { EntityTypeID } from "../mcmeta"; 
+import { NBTBase, NBTCompound } from "../arg/nbt";
 
 /**
  * 代表 Minecraft Java Edition 的 /summon 指令。
@@ -17,8 +17,8 @@ class Summon extends Command {
      * @param nbt 可選，實體的資料標籤 (nbt_compound_tag)。
      */
     constructor(
-        private entityType: ENTITY_TYPES,
-        private pos?: Coordinate,
+        private entityType: EntityTypeID,
+        private pos?: Vec3,
         private nbt?: NBTCompound<Record<string, NBTBase>>
     ) {
         super();
@@ -41,6 +41,6 @@ class Summon extends Command {
 
 }
 
-export function summon(entityType: ENTITY_TYPES, pos?: Coordinate, nbt?: NBTCompound<Record<string, NBTBase>>) {
+export function summon(entityType: EntityTypeID, pos?: Vec3, nbt?: NBTCompound<Record<string, NBTBase>>) {
     new Summon(entityType, pos, nbt)
 }

@@ -1,18 +1,18 @@
 // https://zh.minecraft.wiki/w/%E5%91%BD%E4%BB%A4/execute?variant=zh-tw
 
-import { Selector, TARGET } from '../type/selector'
+import { Selector, TARGET } from '../arg/selector'
 import { Command } from '../core/scope'
 import { MCFunction } from './function';
-import { Coordinate } from '../type/coord';
-import { DIMENSIONS, ENTITY_TYPES } from '../enum';
+import { Vec3 } from '../arg/vec3';
+import { DimensionID, EntityTypeID } from '../mcmeta';
 import { InlineScope } from '../core/scope';
 import { Predicate } from '../core/registry';
 import { Data } from './data';
 import { Score } from './scoreboard/score';
 import { BossBar } from './bossbar';
-import { Condition } from '../type/condition';
+import { Condition } from '../arg/condition';
 
-type IF_ARGS = Condition | Predicate | DIMENSIONS | Data | (()=>void) | MCFunction | Selector
+type IF_ARGS = Condition | Predicate | DimensionID | Data | (()=>void) | MCFunction | Selector
 class If {
     constructor(public readonly condition: IF_ARGS) {}
     public toString() {
@@ -54,21 +54,21 @@ class At {
 }
 
 class Positioned {
-    constructor(public readonly position: Coordinate) {}
+    constructor(public readonly position: Vec3) {}
     public toString() {
         return `positioned ${this.position}`;
     }
 }
 
 class Summon {
-    constructor(public readonly entity: ENTITY_TYPES) {}
+    constructor(public readonly entity: EntityTypeID) {}
     public toString() {
         return `summon ${this.entity}`;
     }
 }
 
 class In {
-    constructor(public readonly dim: DIMENSIONS) {}
+    constructor(public readonly dim: DimensionID) {}
     public toString() {
         return `in ${this.dim}`;
     }
@@ -159,15 +159,15 @@ class Control {
         return this.next(new Unless(condition));
     }
 
-    public positioned(position: Coordinate) {
+    public positioned(position: Vec3) {
         return this.next(new Positioned(position));
     }
 
-    public summon(entity: ENTITY_TYPES) {
+    public summon(entity: EntityTypeID) {
         return this.next(new Summon(entity));
     }
 
-    public in(dim: DIMENSIONS) {
+    public in(dim: DimensionID) {
         return this.next(new In(dim));
     }
 
@@ -213,9 +213,9 @@ export const execute = {
     at: (entity: TARGET) => new Control().at(entity),
     if: (condition: IF_ARGS) => new Control().if(condition),
     unless: (condition: IF_ARGS) => new Control().unless(condition),
-    positioned: (position: Coordinate) => new Control().positioned(position),
-    summon: (entity: ENTITY_TYPES) => new Control().summon(entity),
-    in: (dim: DIMENSIONS) => new Control().in(dim),
+    positioned: (position: Vec3) => new Control().positioned(position),
+    summon: (entity: EntityTypeID) => new Control().summon(entity),
+    in: (dim: DimensionID) => new Control().in(dim),
     on: (rel: RELATION) => new Control().on(rel),
     store: (source: 'result' | 'success') => new Control().store(source)
 }

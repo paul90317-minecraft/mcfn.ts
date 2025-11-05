@@ -1,26 +1,26 @@
 // https://zh.minecraft.wiki/w/%E6%A0%87%E7%AD%BE?variant=zh-tw
 
-import { BLOCKS, ENTITY_TYPES, ITEMS } from "../enum"
+import { BlockId, EntityTypeID, ItemID } from "../mcmeta"
 import { MCFunction, functions } from "../command/function"
 import fs from 'fs';
 import { config } from "../config";
 import { raw } from "../command";
-import { ENTITY_TYPE_TAG } from "../enum/tag/entity_type";
-import { ITEM_TAG } from "../enum/tag/item";
-import { BLOCK_TAG } from "../enum/tag/block";
-import { object_to_string } from "../type";
+import { EntityTypeTagID } from "../mcmeta/tag/entity_type";
+import { ItemTagID } from "../mcmeta/tag/item";
+import { BlockTagID } from "../mcmeta/tag/block";
+import { object_to_string } from "../arg";
 
 export const registry_tags: Record<string, RegistryTag<any>> = {}
 
-type REGISTRY_TAGS = 'entity_type' | 'block' | 'function' | 'item';
-export type TAG<T> = RegistryTag<T> | T;
+type RegisterTagID = 'entity_type' | 'block' | 'function' | 'item';
+export type WithTag<T> = RegistryTag<T> | T;
 
 export class RegistryTag<T> {
     private name: string
     private values: readonly T[]
-    private type: REGISTRY_TAGS
+    private type: RegisterTagID
     private namesp: string
-    constructor(type: REGISTRY_TAGS, values: readonly T[], namesp: string, name?: string) {
+    constructor(type: RegisterTagID, values: readonly T[], namesp: string, name?: string) {
         if (name) {
             if (name[0] === "_")
                 throw new Error("Custom tag starting with _ is not allowed.")
@@ -51,8 +51,13 @@ export class RegistryTag<T> {
     }
 }
 
-export class FunctionTag extends RegistryTag<TAG<MCFunction>> {
-    constructor(values: TAG<MCFunction>[], namesp: string, name?: string) {
+export type FunctionRef = WithTag<MCFunction>
+export type EntityTypeRef = WithTag<EntityTypeID | `#${EntityTypeTagID}`>
+export type ItemTypeRef = WithTag<ItemID | `#${ItemTagID}`> | '*'
+export type BlockRef = WithTag<BlockId | `#${BlockTagID}`>
+
+export class FunctionTag extends RegistryTag<FunctionRef> {
+    constructor(values: readonly FunctionRef[], namesp: string, name?: string) {
         super('function', values, namesp, name)
     }
     public call() {
@@ -60,15 +65,14 @@ export class FunctionTag extends RegistryTag<TAG<MCFunction>> {
     }
 }
 
-export type ENTITY_TYPE = TAG<ENTITY_TYPES | `#${ENTITY_TYPE_TAG}`>
-export type ITEM = TAG<ITEMS | `#${ITEM_TAG}` | '*'>
-export type BLOCK = TAG<BLOCKS | `#${BLOCK_TAG}`>
-
 export const tags = {
-    entity_type: (values: readonly ENTITY_TYPE[], name?: string) => new RegistryTag<ENTITY_TYPE>(
+    entity_type: (values: readonly EntityTypeRef[], name?: string) => new RegistryTag<EntityTypeRef>(
         'entity_type', values, config.namespace, name),
-    item: (values: readonly ITEM[], name?: string) => new RegistryTag<ITEM>(
+    item: (values: readonly ItemTypeRef[], name?: string) => new RegistryTag<ItemTypeRef>(
         'item', values, config.namespace, name),
-    block: (values: readonly BLOCK[], name?: string) => new RegistryTag<BLOCK>(
-        'block', values, config.namespace, name)
+    block: (values: readonly BlockRef[], name?: string) => new RegistryTag<BlockRef>(
+        'block', values, config.namespace, name),
+    function: (values: readonly FunctionRef[], name?: string) => new FunctionTag(
+        values, config.namespace, name
+    )
 }

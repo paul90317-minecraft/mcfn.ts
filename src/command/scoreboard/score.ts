@@ -1,8 +1,8 @@
 import { Objective } from "./objective"
-import { TARGET } from "../../type/selector"
-import { Bound } from "../../type/bound"
+import { TARGET } from "../../arg/selector"
+import { NumberRange } from "../../arg/range"
 import { Command } from "../../core/scope"
-import { Condition } from "../../type/condition"
+import { Condition } from "../../arg/condition"
 
 type COMPARES = '>' | '<' | '=' | '>=' | '<='
 type OPERATORS = '>' | '<' | '><' | '=' | '+=' | '-=' | '/=' | '*=' | '%='
@@ -16,35 +16,35 @@ export class Score {
         this.target = target
     }
     public matches(bound: {lower?:number, upper?:number}) {
-        return new ScoreMatches(this, new Bound(bound))
+        return new ScoreMatches(this, new NumberRange(bound))
     }
     public between(lower: number, upper:number) {
-        return new ScoreMatches(this, new Bound({lower, upper}))
+        return new ScoreMatches(this, new NumberRange({lower, upper}))
     }
     public gt(score2: Score | number) {
         if(score2 instanceof Score)
             return new ScoreCompares(this, '>', score2)
-        return new ScoreMatches(this, new Bound({lower: score2 + 1}))
+        return new ScoreMatches(this, new NumberRange({lower: score2 + 1}))
     }
     public lt(score2: Score | number) {
         if(score2 instanceof Score)
             return new ScoreCompares(this, '<', score2)
-        return new ScoreMatches(this, new Bound({upper: score2 - 1}))
+        return new ScoreMatches(this, new NumberRange({upper: score2 - 1}))
     }
     public eq(score2: Score | number) {
         if(score2 instanceof Score)
             return new ScoreCompares(this, '=', score2)
-        return new ScoreMatches(this, new Bound({upper: score2, lower: score2}))
+        return new ScoreMatches(this, new NumberRange({upper: score2, lower: score2}))
     }
     public ge(score2: Score | number) {
         if(score2 instanceof Score)
             return new ScoreCompares(this, '>=', score2)
-        return new ScoreMatches(this, new Bound({lower: score2}))
+        return new ScoreMatches(this, new NumberRange({lower: score2}))
     }
     public le(score2: Score | number) {
         if(score2 instanceof Score)
             return new ScoreCompares(this, '<=', score2)
-        return new ScoreMatches(this, new Bound({upper: score2}))
+        return new ScoreMatches(this, new NumberRange({upper: score2}))
     }
     public addby(arg: Score | number) {
         if (arg instanceof Score)
@@ -110,8 +110,8 @@ class ScoreCompares extends Condition {
 
 class ScoreMatches extends Condition {
     public readonly score: Score
-    public readonly bound: Bound
-    constructor(score: Score, bound: Bound) {
+    public readonly bound: NumberRange
+    constructor(score: Score, bound: NumberRange) {
         super()
         this.score = score
         this.bound = bound

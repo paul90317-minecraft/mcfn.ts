@@ -1,9 +1,9 @@
 // https://minecraft.fandom.com/wiki/Commands/particle
 
 import { Command } from "../core/scope";
-import { PARTICLE_TYPES } from "../enum";
-import { Coordinate } from "../type/coord";
-import { TARGET } from "../type/selector";
+import { ParticleTypeID } from "../mcmeta";
+import { Vec3 } from "../arg/vec3";
+import { TARGET } from "../arg/selector";
 
 /**
  * 代表 Minecraft Java Edition 的 /particle 指令。
@@ -21,9 +21,9 @@ class Particle extends Command {
      * @param viewers 可選，指定哪些玩家能看到粒子 [5]。
      */
     constructor(
-        private name: PARTICLE_TYPES,
-        private pos?: Coordinate,
-        private delta?: Coordinate,
+        private name: ParticleTypeID,
+        private pos?: Vec3,
+        private delta?: Vec3,
         private speed?: number,
         private count?: number,
         private mode?: 'force' | 'normal',
@@ -55,13 +55,13 @@ class Particle extends Command {
  * 處理 /particle 指令的函數重載。
  */
 // 形式 1: 簡單語法 particle <name> [<pos>] [1]
-export function particle(name: PARTICLE_TYPES, pos?: Coordinate): void;
+export function particle(name: ParticleTypeID, pos?: Vec3): void;
 
 // 形式 2: 完整複雜語法 particle <name> <pos> <delta> <speed> <count> [force|normal] [<viewers>] [1]
 export function particle(
-    name: PARTICLE_TYPES, 
-    pos: Coordinate, 
-    delta: Coordinate, 
+    name: ParticleTypeID, 
+    pos: Vec3, 
+    delta: Vec3, 
     speed: number, 
     count: number, 
     mode?: 'force' | 'normal', 
@@ -69,6 +69,6 @@ export function particle(
 ): void;
 
 // 實現函數
-export function particle(a: PARTICLE_TYPES, b?: Coordinate | Coordinate, c?: Coordinate, d?: number, e?: number, f?: 'force' | 'normal', g?: TARGET) {
+export function particle(a: ParticleTypeID, b?: Vec3 | Vec3, c?: Vec3, d?: number, e?: number, f?: 'force' | 'normal', g?: TARGET) {
     new Particle(a, b, c, d, e, f, g)
 }

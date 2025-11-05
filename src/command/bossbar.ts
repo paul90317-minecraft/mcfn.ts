@@ -1,7 +1,7 @@
 import { config } from "../config";
 import { Command } from "../core/scope";
-import { NBTText } from "../type/nbt";
-import { TARGET } from "../type/selector";
+import { NBTText } from "../arg/nbt";
+import { TARGET } from "../arg/selector";
 
 export type BOSSBAR_COLOR = 
   | 'blue' | 'green' | 'pink' | 'purple' | 'red' 

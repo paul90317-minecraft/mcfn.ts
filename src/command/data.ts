@@ -1,7 +1,7 @@
 import { Command } from "../core/scope"
-import { Coordinate } from "../type/coord"
-import { NBTBase, NBTCompound } from "../type/nbt"
-import { TARGET } from "../type/selector"
+import { Vec3 } from "../arg/vec3"
+import { NBTBase, NBTCompound } from "../arg/nbt"
+import { TARGET } from "../arg/selector"
 import { config } from "../config"
 
 export abstract class Data {
@@ -97,8 +97,8 @@ class StorageData extends Data {
 }
 
 class BlockData extends Data {
-    private pos: Coordinate
-    constructor(pos: Coordinate, paths: string[] = []) {
+    private pos: Vec3
+    constructor(pos: Vec3, paths: string[] = []) {
         super(paths)
         this.pos = pos
     }
@@ -147,7 +147,7 @@ class DataModify extends Command {
 }
 
 export let data = {
-    block:(pos: Coordinate) => new BlockData(pos),
+    block:(pos: Vec3) => new BlockData(pos),
     entity:(target: TARGET) => new EntityData(target),
     storage: (name: string) => new StorageData(name)
 }

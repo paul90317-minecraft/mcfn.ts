@@ -1,15 +1,15 @@
 // https://minecraft.fandom.com/wiki/Commands/fill
 import { Command } from "../../core/scope";
 import { Block } from "./block"; // 假設 Block 類別來自 setblock 實作 [3]
-import { Coordinate } from "../../type/coord";
+import { Vec3 } from "../../arg/vec3";
 
 export type FILL_MODE = 'destroy' | 'hollow' | 'keep' | 'outline' | 'strict';
 export type REPLACE_MODE = 'destroy' | 'hollow' | 'outline' | 'strict';
 
 export class BlockFill extends Command {
     constructor(
-        private from: Coordinate,
-        private to: Coordinate,
+        private from: Vec3,
+        private to: Vec3,
         private block: Block, 
         private mode?: FILL_MODE 
     ) {
@@ -29,8 +29,8 @@ export class BlockFill extends Command {
 
 export class BlockReplace extends Command {
     constructor(
-        private from: Coordinate,
-        private to: Coordinate,
+        private from: Vec3,
+        private to: Vec3,
         private block: Block, 
         private filter?: Block,
         private mode?: REPLACE_MODE 

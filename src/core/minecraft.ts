@@ -8,7 +8,7 @@ import { bossbars } from "../command/bossbar";
 import { teams } from "../command/team";
 import { FunctionTag, registry_tags } from './tag';
 import { resourcepack } from "../asset";
-import { object_to_string } from "../type";
+import { object_to_string } from "../arg";
 
 let tick: MCFunction | undefined;
 let load: MCFunction | undefined;

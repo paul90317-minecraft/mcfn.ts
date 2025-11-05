@@ -1,13 +1,13 @@
 import { Command } from "../core/scope";
-import { Coordinate } from "../type/coord";
-import { TARGET } from "../type/selector";
+import { Vec3 } from "../arg/vec3";
+import { TARGET } from "../arg/selector";
 
 
 
 class TP extends Command {
     private src?: TARGET
-    private dst: TARGET | Coordinate
-    constructor(a: TARGET | Coordinate, b?: TARGET | Coordinate) {
+    private dst: TARGET | Vec3
+    constructor(a: TARGET | Vec3, b?: TARGET | Vec3) {
         super()
         if(b) {
             this.src = a as TARGET
@@ -23,8 +23,8 @@ class TP extends Command {
     }
 }
 
-export function tp(dst: TARGET | Coordinate): void
-export function tp(src: TARGET, dst: TARGET | Coordinate): void
-export function tp(a: TARGET | Coordinate, b?: TARGET | Coordinate) {
+export function tp(dst: TARGET | Vec3): void
+export function tp(src: TARGET, dst: TARGET | Vec3): void
+export function tp(a: TARGET | Vec3, b?: TARGET | Vec3) {
     new TP(a, b)
 }

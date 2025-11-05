@@ -1,8 +1,8 @@
 // https://minecraft.fandom.com/wiki/Commands/loot
 import { LootTable } from "../core/registry";
 import { Command } from "../core/scope";
-import { Coordinate } from "../type/coord";
-import { TARGET } from "../type/selector";
+import { Vec3 } from "../arg/vec3";
+import { TARGET } from "../arg/selector";
 import { Item, Slot } from "./item";
 
 type TOOLS = Item | 'mainhand' | 'offhand'
@@ -14,19 +14,19 @@ class BaseSource {
     public give (target: TARGET) {
         new LootGive(target, this)
     }
-    public insert(pos: Coordinate) {
+    public insert(pos: Vec3) {
         new LootInsert(pos, this)
     }
     public replace(slot: Slot, count?: number) {
         new LootReplace(slot, this, count)
     }
-    public spawn(pos: Coordinate) {
+    public spawn(pos: Vec3) {
         new LootSpawn(pos, this)
     }
 }
 
 class FishSource extends BaseSource{
-    constructor(private loot: LootTable, private pos: Coordinate, private tool?: TOOLS) {
+    constructor(private loot: LootTable, private pos: Vec3, private tool?: TOOLS) {
         super()
     }
     public toString() {
@@ -56,7 +56,7 @@ class KillSource extends BaseSource {
 }
 
 class MineSource extends BaseSource {
-    constructor(private pos: Coordinate, private tool?: TOOLS) {
+    constructor(private pos: Vec3, private tool?: TOOLS) {
         super()
     }
     public toString() {
@@ -75,14 +75,14 @@ class LootGive extends Command {
 }
 
 class LootInsert extends Command {
-    constructor(private pos: Coordinate, private source: BaseSource) { super(); }
+    constructor(private pos: Vec3, private source: BaseSource) { super(); }
     public toString() {
         return `loot insert ${this.pos} ${this.source}`;
     }
 }
 
 class LootSpawn extends Command {
-    constructor(private pos: Coordinate, private source: BaseSource) { super(); }
+    constructor(private pos: Vec3, private source: BaseSource) { super(); }
     public toString() {
         return `loot spawn ${this.pos} ${this.source}`;
     }
@@ -99,8 +99,8 @@ class LootReplace extends Command {
 
 export const loot = Object.assign((loot: LootTable) => new LootSource(loot), {
     // target actions
-    fish: (loot: LootTable, pos: Coordinate, tool: TOOLS) => new FishSource(loot, pos, tool),
-    mine: (pos: Coordinate, tool: TOOLS) => new MineSource(pos, tool),
+    fish: (loot: LootTable, pos: Vec3, tool: TOOLS) => new FishSource(loot, pos, tool),
+    mine: (pos: Vec3, tool: TOOLS) => new MineSource(pos, tool),
     kill: (entity: TARGET) => new KillSource(entity)
 });
 

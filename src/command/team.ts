@@ -2,10 +2,11 @@
 
 // https://minecraft.wiki/w/Commands/tag
 
-import { TARGET } from "../type/selector"
+import { TARGET } from "../arg/selector"
 import { config } from "../config"
 import { raw } from "./raw"
-import { NBTText } from "../type/nbt"
+import { NBTText } from "../arg/nbt"
+import { ColorID } from "../mcmeta/command_argument_type"
 
 export const teams: Record<string, Team> = {}
 
@@ -61,28 +62,10 @@ export class Team {
     }
 }
 
-type COLOR_CODES =
-  | 'black'
-  | 'dark_blue'
-  | 'dark_green'
-  | 'dark_aqua'
-  | 'dark_red'
-  | 'dark_purple'
-  | 'gold'
-  | 'gray'
-  | 'dark_gray'
-  | 'blue'
-  | 'green'
-  | 'aqua'
-  | 'red'
-  | 'light_purple'
-  | 'yellow'
-  | 'white'
-
-  type VISIBLE = 'never' | 'hideForOtherTeams' | 'hideForOwnTeam' | 'always'
+type VISIBLE = 'never' | 'hideForOtherTeams' | 'hideForOwnTeam' | 'always'
 type TEAM_MOD = {
     displayName?: NBTText
-    color?: COLOR_CODES,
+    color?: ColorID,
     friendlyFire?: boolean,
     seeFriendlyInvisibles?: boolean,
     nametagVisibility?: VISIBLE

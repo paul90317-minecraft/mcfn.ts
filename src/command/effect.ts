@@ -1,6 +1,6 @@
 import { Command } from "../core/scope";
-import { TARGET } from "../type/selector";
-import { MOB_EFFECTS } from "../enum";
+import { TARGET } from "../arg/selector";
+import { MobEffectID } from "../mcmeta";
 
 type EffectDuration = number | 'infinite';
 
@@ -8,7 +8,7 @@ class Effect extends Command {
     constructor(
         private targets: TARGET,
         private action: 'give' | 'clear',
-        private effect?: MOB_EFFECTS,
+        private effect?: MobEffectID,
         private duration?: EffectDuration,
         private amplifier?: number,
         private hideParticles?: boolean
@@ -41,13 +41,13 @@ class Effect extends Command {
 export const effect = {
     give: (
         targets: TARGET,
-        effect?: MOB_EFFECTS,
+        effect?: MobEffectID,
         seconds?: EffectDuration,
         amplifier?: number,
         hideParticles?: boolean
     ) => new Effect(targets, 'give', effect, seconds, amplifier, hideParticles),
     clear: (
         targets: TARGET,
-        effect?: MOB_EFFECTS,
+        effect?: MobEffectID,
     ) => new Effect(targets, 'clear', effect)
 }
