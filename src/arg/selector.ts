@@ -12,14 +12,15 @@ export type SELECTORS = '@s' | '@r' | '@p' | '@a' | '@e' | '@n'
 
 interface SelectFilter {
     type?: EntityTypeRef
+    excl_types?: EntityTypeRef[]
     distance?: {lower?: number, upper?: number},
     scores?: ObjectiveMatches[]
     tags?: EntityTag[]
     excl_tags?: EntityTag[]
     limit?: number
     sort?: 'arbitrary' | 'furthest' | 'nearest' | 'random'
-    nbt?: NBTCompound<Record<string, NBTBase>>
-    excl_nbt?: NBTCompound<Record<string, NBTBase>>
+    nbts?: NBTCompound<Record<string, NBTBase>>[]
+    excl_nbts?: NBTCompound<Record<string, NBTBase>>[]
     team?: Team,
     excl_teams?: Team[],
     x?: number,
@@ -63,11 +64,13 @@ export class Selector {
         if(this.filter.sort)
             filters.push(`sort=${this.filter.sort}`)
         
-        if(this.filter.nbt)
-            filters.push(`nbt=${this.filter.nbt}`)
+        if(this.filter.nbts)
+            for(let nbt of this.filter.nbts) 
+                filters.push(`nbt=${nbt}`)
         
-        if(this.filter.excl_nbt)
-            filters.push(`nbt=!${this.filter.excl_nbt}`)
+        if(this.filter.excl_nbts)
+            for(let nbt of this.filter.excl_nbts) 
+                filters.push(`nbt=!${nbt}`)
         
         if(this.filter.dx)
             filters.push(`dx=${this.filter.dx}`)
@@ -89,6 +92,17 @@ export class Selector {
         
         if(this.filter.type)
             filters.push(`type=${this.filter.type}`)
+
+        temp = this.filter.excl_types?.map(t=>`type=!${t}`).join(',')
+        if(temp)
+            filters.push(temp)
+
+        if(this.filter.team)
+            filters.push(`team=${this.filter.team}`)
+
+        temp = this.filter.excl_teams?.map(t=>`team=!${t}`).join(',')
+        if(temp)
+            filters.push(temp)
         
         return `${this.target}[${filters.join(',')}]`
     }
