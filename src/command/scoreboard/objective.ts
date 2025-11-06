@@ -2,7 +2,7 @@
 
 import { ObjectiveCriterionID } from '../../mcmeta/command_argument_type/objective_criteria'
 import { TARGET } from '../../arg/selector'
-import { NumberRange } from '../../arg/range'
+import { NubmerRangeInterface, NumberRange } from '../../arg/range'
 import { Command } from '../../core/scope'
 import { Score } from './score'
 import { config } from '../../config'
@@ -37,7 +37,7 @@ export class Objective {
     public get(target: TARGET) {
         return new Score(this, target)
     }
-    public matches(bound: {lower?: number, upper?: number}) {
+    public matches(bound: NubmerRangeInterface) {
         return new ObjectiveMatches(this, new NumberRange(bound))
     }
     public between(lower: number, upper: number) {

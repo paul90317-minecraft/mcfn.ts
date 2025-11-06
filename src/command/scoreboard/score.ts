@@ -1,6 +1,6 @@
 import { Objective } from "./objective"
 import { TARGET } from "../../arg/selector"
-import { NumberRange } from "../../arg/range"
+import { NubmerRangeInterface, NumberRange } from "../../arg/range"
 import { Command } from "../../core/scope"
 import { Condition } from "../../arg/condition"
 
@@ -15,7 +15,7 @@ export class Score {
         this.objective = objective
         this.target = target
     }
-    public matches(bound: {lower?:number, upper?:number}) {
+    public matches(bound: NubmerRangeInterface) {
         return new ScoreMatches(this, new NumberRange(bound))
     }
     public between(lower: number, upper:number) {

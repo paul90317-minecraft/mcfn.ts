@@ -4,7 +4,7 @@
 import { ObjectiveMatches } from "../command/scoreboard/objective"
 import { EntityTag } from "../command/tag"
 import { EntityTypeRef } from "../core/tag"
-import { NumberRange } from "./range"
+import { NubmerRangeInterface, NumberRange } from "./range"
 import { NBTCompound, NBTBase } from "./nbt"
 import { Team } from "../command/team"
 
@@ -13,7 +13,7 @@ export type SELECTORS = '@s' | '@r' | '@p' | '@a' | '@e' | '@n'
 interface SelectFilter {
     type?: EntityTypeRef
     excl_types?: EntityTypeRef[]
-    distance?: {lower?: number, upper?: number},
+    distance?: NubmerRangeInterface,
     scores?: ObjectiveMatches[]
     tags?: EntityTag[]
     excl_tags?: EntityTag[]

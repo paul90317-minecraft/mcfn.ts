@@ -1,6 +1,6 @@
 {
   "name": "mcfn.ts",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "dist/index.js",
   "keywords": [
     "minecraft",
