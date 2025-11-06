@@ -1,10 +1,43 @@
 # mcfn.ts
 This is a TypeScript library for building Minecraft function files, datapack, and resourcepack programmatically. 
 
-## Features
-- Create multiple mcfunctions in single file.
-- Generate datapack and resourcepack structure in one project
-- Use typescript to organize your mcfunction code
+## Usage
+Here is a simple example of how to use the library to create a Minecraft function file:
+```typescript
+import { effect, execute, minecraft, objective, sel } from "mcfn.ts";
+
+let kill_count = objective('minecraft.killed:minecraft.zombie')
+let death_count = objective('deathCount')
+let rage_level = objective('dummy')
+
+minecraft.tick(() => {
+    execute.as(sel('@a')).at(sel('@s')).run(() => {
+        let self = sel('@s')
+        let player_kill_count = kill_count.get(self)
+        let player_death_count = death_count.get(self)
+        let player_rage_level = rage_level.get(self)
+        execute.if(player_death_count.ge(1)).run(() => {
+            player_death_count.reset()
+            player_rage_level.reset()
+        })
+        execute.if(player_kill_count.ge(1)).run(() => {
+            player_kill_count.reset()
+            execute.if(player_rage_level.lt(200)).run(() => {
+                player_rage_level.addby(1)
+            }, true)
+        })
+        for (let i = 1; i <= 200; i++) {
+            execute.if(player_rage_level.eq(i)).run(() => {
+                effect.give(self, 'strength', 1, i - 1)
+            }, true)
+        }
+        
+    })
+})
+```
+This code is "Minecraft, but killing zombies makes you stronger, until you die". The generated datapack contains five function files for /execute forking, and 200 more lines in the function that gives player strength effect based on rage levels. All of these are generated from this single TypeScript file, which performs better organization and maintainability.
+
+you can see more examples here: [mcfn-ts](https://github.com/orgs/paul90317-minecraft/repositories?q=has%3Atopic+mcfn-ts)
 
 ## Installation
 You can install the library via npm:
@@ -46,23 +79,9 @@ Before using the library, you need to configure the datapack and resourcepack se
 - `outdir`: The output directory for the generated pack.
 - `icon`: Optional, the icon file for the pack.
 
-## Usage
-Here is a simple example of how to use the library to create a Minecraft function file:
-```typescript
-minecraft.tick(() => {
-    execute.as(sel('@a')).at(sel('@s')).run(() => {
-        tp(sel('@e', {
-            type: 'item',
-            distance: {uppper: 8}
-        }), sel('@p'))
-    })
-})
-```
-This code creates a tick function that teleports nearby items to each player, which increases item pickup range.
 
-you can see more examples here: [mcfn-ts](https://github.com/orgs/paul90317-minecraft/repositories?q=has%3Atopic+mcfn-ts)
 
-## Building the Pack
+## Building the Packs
 You can use ts-node to build the datapack and resourcepack:
 ```bash
 npx ts-node ./main.ts
