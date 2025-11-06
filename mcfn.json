@@ -7,7 +7,8 @@
                 "pack_format": 88
             }
         },
-        "outdir": "out/datapack"
+        "outdir": "out/datapack",
+        "icon": "pack.png"
     },
     "resourcepack": {
         "mcmeta": {
@@ -16,6 +17,7 @@
                 "pack_format": 69
             }
         },
-        "outdir": "out/resourcepack"
+        "outdir": "out/resourcepack",
+        "icon": "pack.png"
     }
 }

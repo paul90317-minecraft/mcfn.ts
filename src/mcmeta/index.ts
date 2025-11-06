@@ -1,3 +1,12 @@
+/*
+ * This directory includes code from the following open-source projects.
+ * The referenced code corresponds to the state of each repository as of 2025/11/06.
+ *
+ * - sandstone (MIT License)
+ *   https://github.com/sandstone-mc/sandstone
+ *   Copyright (c) The Sandstone Team
+ */
+
 export * from './attribute'
 export * from './block'
 export * from './command_argument_type/objective_criteria'
