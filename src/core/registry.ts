@@ -5,7 +5,7 @@
 import { config } from "../config"
 import fs from 'fs';
 import { tags } from './tag'
-import { object_to_string } from "../arg";
+import { object_to_json } from "./object";
 
 type  REGISTRY_NAME = 'loot_table' | 'item_modifier' | 'predicate' | 'recipe'
 
@@ -38,7 +38,7 @@ export class Registry {
         fs.mkdirSync(dir, {
             recursive: true
         })
-        fs.writeFileSync(`${dir}/${this.name}.json`, object_to_string(this.data))
+        fs.writeFileSync(`${dir}/${this.name}.json`, object_to_json(this.data))
     }
     public toString() {
         return `${this.namesp}:${this.name}`

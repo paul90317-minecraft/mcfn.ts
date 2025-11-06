@@ -8,7 +8,7 @@ import { raw } from "../command";
 import { EntityTypeTagID } from "../mcmeta/tag/entity_type";
 import { ItemTagID } from "../mcmeta/tag/item";
 import { BlockTagID } from "../mcmeta/tag/block";
-import { object_to_string } from "../arg";
+import { object_to_json } from "./object";
 
 export const registry_tags: Record<string, RegistryTag<any>> = {}
 
@@ -42,7 +42,7 @@ export class RegistryTag<T> {
     }
 
     _create() {
-        let data = object_to_string({ values: this.values.map(v => `${v}`) })
+        let data = object_to_json({ values: this.values.map(v => `${v}`) })
         let directory = `${config.datapack.outdir}/data/${this.namesp}/tags/${this.type}`
         fs.mkdirSync(directory, {
             recursive: true

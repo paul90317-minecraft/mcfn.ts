@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { config } from '../config';
-import { object_to_string } from '../arg';
+import { object_to_json } from '../core';
 
 export const item_models: Record<string, ItemModel> = {}
 
@@ -23,7 +23,7 @@ export class ItemModel {
         fs.mkdirSync(dir, {
             recursive: true
         })
-        fs.writeFileSync(dir + `${this.name}.json`, object_to_string(this.data))
+        fs.writeFileSync(dir + `${this.name}.json`, object_to_json(this.data))
     }
     toString() {
         return `${config.namespace}:${this.name}`

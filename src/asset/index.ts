@@ -4,7 +4,7 @@ import { item_models, ItemModel } from './item'
 import { Equipment, equipments } from './equipment'
 import { config } from '../config'
 import fs from 'fs'
-import { object_to_string } from '../arg'
+import { object_to_json } from '../core'
 
 export * from './model'
 export * from './texture'
@@ -24,7 +24,7 @@ export const resourcepack = {
         fs.mkdirSync(config.resourcepack.outdir ,{
             recursive: true
         })
-        fs.writeFileSync(`${config.resourcepack.outdir}/pack.mcmeta`, object_to_string(config.resourcepack.mcmeta))
+        fs.writeFileSync(`${config.resourcepack.outdir}/pack.mcmeta`, object_to_json(config.resourcepack.mcmeta))
 
         if (config.resourcepack.icon)
             fs.copyFileSync(

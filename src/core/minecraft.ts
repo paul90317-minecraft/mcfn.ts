@@ -8,7 +8,7 @@ import { bossbars } from "../command/bossbar";
 import { teams } from "../command/team";
 import { FunctionTag, registry_tags } from './tag';
 import { resourcepack } from "../asset";
-import { object_to_string } from "../arg";
+import { object_to_json } from "./object";
 
 let tick: MCFunction | undefined;
 let load: MCFunction | undefined;
@@ -56,7 +56,7 @@ function emit() {
     fs.mkdirSync(config.datapack.outdir ,{
         recursive: true
     })
-    fs.writeFileSync(`${config.datapack.outdir}/pack.mcmeta`, object_to_string(config.datapack.mcmeta))
+    fs.writeFileSync(`${config.datapack.outdir}/pack.mcmeta`, object_to_json(config.datapack.mcmeta))
 
     if (config.datapack.icon)
         fs.copyFileSync(

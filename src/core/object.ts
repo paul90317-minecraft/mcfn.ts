@@ -28,15 +28,15 @@ export type TextObject = {
 
 import { EquipmentTexture, ItemModel, ItemTexture, Model } from "../asset"
 import { Equipment } from "../asset/equipment"
-import { ItemModifier, LootTable, Predicate, Recipe, Registry } from "../core/registry"
-import { RegistryTag } from "../core/tag"
+import { ItemModifier, LootTable, Predicate, Recipe, Registry } from "./registry"
+import { RegistryTag } from "./tag"
 import { AttributeID } from "../mcmeta";
 import { ColorID } from "../mcmeta/command_argument_type";
-import { NBTBase } from "./nbt"
+import { NBTBase } from "../arg/nbt"
 
 type ObjectType = Registry | RegistryTag<any> | ItemTexture | Equipment | EquipmentTexture | ItemModel | Model | NBTBase | ItemModifier | LootTable | Predicate | Recipe | string | number | boolean | object
 
-export function object_to_string(obj: object): string {
+export function object_to_json(obj: object): string {
     function helper(x: ObjectType) {
         if (
             x instanceof Registry ||
@@ -59,7 +59,7 @@ export function object_to_string(obj: object): string {
             return x
         if (typeof x === 'boolean')
             return x ? 'true' : 'false'
-        return object_to_string(x)
+        return object_to_json(x)
     }
     if (obj instanceof Array) {
         let x = obj.map(x => helper(x))
