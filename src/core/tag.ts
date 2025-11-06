@@ -24,12 +24,12 @@ export class RegistryTag<T> {
         if (name) {
             if (name[0] === "_")
                 throw new Error("Custom tag starting with _ is not allowed.")
-            if (name in tags)
+            if (name in registry_tags)
                 throw new Error("Duplicated tag declaration.")
             this.name = name
             
         } else {
-            this.name = `_${Object.keys(tags).length}`
+            this.name = `_${Object.keys(registry_tags).length}`
         }
         this.values = values
         registry_tags[type + this] = this
@@ -63,16 +63,4 @@ export class FunctionTag extends RegistryTag<FunctionRef> {
     public call() {
         raw(`function ${this}`)
     }
-}
-
-export const tags = {
-    entity_type: (values: readonly EntityTypeRef[], name?: string) => new RegistryTag<EntityTypeRef>(
-        'entity_type', values, config.namespace, name),
-    item: (values: readonly ItemTypeRef[], name?: string) => new RegistryTag<ItemTypeRef>(
-        'item', values, config.namespace, name),
-    block: (values: readonly BlockRef[], name?: string) => new RegistryTag<BlockRef>(
-        'block', values, config.namespace, name),
-    function: (values: readonly FunctionRef[], name?: string) => new FunctionTag(
-        values, config.namespace, name
-    )
 }

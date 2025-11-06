@@ -51,5 +51,4 @@ try {
     fs.writeFileSync('./mcfn.json', JSON.stringify(_config))
 }
 export const config = _config
-
 console.log('Validated config:', _config);

@@ -4,7 +4,7 @@
 
 import { config } from "../config"
 import fs from 'fs';
-import { tags } from './tag'
+import { RegistryTag, FunctionTag, EntityTypeRef, BlockRef, FunctionRef, ItemTypeRef } from './tag'
 import { object_to_json } from "./object";
 
 type  REGISTRY_NAME = 'loot_table' | 'item_modifier' | 'predicate' | 'recipe'
@@ -78,5 +78,15 @@ export const datapack = {
         new Predicate(data, config.namespace, name),
     recipe: (data: object, name?: string) =>
         new Recipe(data, config.namespace, name),
-    tags
+    tags: {
+        entity_type: (values: readonly EntityTypeRef[], name?: string) => new RegistryTag<EntityTypeRef>(
+            'entity_type', values, config.namespace, name),
+        item: (values: readonly ItemTypeRef[], name?: string) => new RegistryTag<ItemTypeRef>(
+            'item', values, config.namespace, name),
+        block: (values: readonly BlockRef[], name?: string) => new RegistryTag<BlockRef>(
+            'block', values, config.namespace, name),
+        function: (values: readonly FunctionRef[], name?: string) => new FunctionTag(
+            values, config.namespace, name
+        )
+    }
 }
