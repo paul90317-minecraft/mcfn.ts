@@ -55,7 +55,7 @@ export class RegistryTag<T> {
 
 export type FunctionRef = WithTag<MCFunction>
 export type EntityTypeRef = WithTag<EntityTypeID | `#${EntityTypeTagID}`>
-export type ItemTypeRef = WithTag<ItemID | `#${ItemTagID}`> | '*' 
+export type ItemRef = WithTag<ItemID | `#${ItemTagID}`> | '*' 
 export type BlockRef = WithTag<BlockId | `#${BlockTagID}`>
 
 export class FunctionTag extends RegistryTag<FunctionRef> {

@@ -10,7 +10,7 @@ import { NBTBase } from "../arg/nbt";
 import { Command } from "../core/scope";
 import { ItemModifier } from "../core/registry";
 import { Condition } from "../arg/condition";
-import { ItemTypeRef } from "../core/tag";
+import { ItemRef } from "../core/tag";
 
 export class Slot {
     private target: TARGET | Vec3
@@ -93,9 +93,9 @@ type ItemComponent = Partial<Record<DataComponentTypeID, NBTBase>>
 type ItemComponents = {excl?: ItemComponent, incl?: ItemComponent}
 
 export class Item {
-    private item: ItemTypeRef
+    private item: ItemRef
     private components?: ItemComponents
-    constructor(item: ItemTypeRef, components?: ItemComponents) {
+    constructor(item: ItemRef, components?: ItemComponents) {
         this.item = item
         if(components) {
             this.components = components
@@ -188,6 +188,6 @@ class Give extends Command {
     }
 }
 
-export const item = Object.assign((it: ItemTypeRef, comp?: ItemComponents)=>new Item(it, comp), {
+export const item = Object.assign((it: ItemRef, comp?: ItemComponents)=>new Item(it, comp), {
     slot: (tar: Vec3 | TARGET, slot: ItemSlotID)=>new Slot(tar, slot)
 })
