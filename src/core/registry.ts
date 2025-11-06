@@ -81,7 +81,7 @@ export const datapack = {
     tags: {
         entity_type: (values: readonly EntityTypeRef[], name?: string) => new RegistryTag<EntityTypeRef>(
             'entity_type', values, config.namespace, name),
-        item: (values: readonly ItemTypeRef[], name?: string) => new RegistryTag<ItemTypeRef>(
+        item: (values: readonly Exclude<ItemTypeRef, '*'>[], name?: string) => new RegistryTag<Exclude<ItemTypeRef, '*'>>(
             'item', values, config.namespace, name),
         block: (values: readonly BlockRef[], name?: string) => new RegistryTag<BlockRef>(
             'block', values, config.namespace, name),

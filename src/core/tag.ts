@@ -13,28 +13,27 @@ import { object_to_json } from "./object";
 export const registry_tags: Record<string, RegistryTag<any>> = {}
 
 type RegisterTagID = 'entity_type' | 'block' | 'function' | 'item';
-export type WithTag<T> = RegistryTag<T> | T;
+export type WithTag<T> = RegistryTag<WithTag<T>> | T;
 
 export class RegistryTag<T> {
     private name: string
-    private values: readonly T[]
-    private type: RegisterTagID
-    private namesp: string
-    constructor(type: RegisterTagID, values: readonly T[], namesp: string, name?: string) {
+
+    constructor(public type: RegisterTagID, public values: readonly T[], private namesp: string, name?: string) {
         if (name) {
             if (name[0] === "_")
                 throw new Error("Custom tag starting with _ is not allowed.")
             if (name in registry_tags)
                 throw new Error("Duplicated tag declaration.")
             this.name = name
-            
         } else {
             this.name = `_${Object.keys(registry_tags).length}`
         }
-        this.values = values
-        registry_tags[type + this] = this
+
         this.type = type
         this.namesp = namesp
+
+        // 這裡 key 用 toString 方便
+        registry_tags[type + this] = this
     }
 
     toString() {
@@ -42,18 +41,21 @@ export class RegistryTag<T> {
     }
 
     _create() {
-        let data = object_to_json({ values: this.values.map(v => `${v}`) })
+        let data = object_to_json({ values: this.values.map(v => `${v}`) }) // 直接 map this
         let directory = `${config.datapack.outdir}/data/${this.namesp}/tags/${this.type}`
-        fs.mkdirSync(directory, {
-            recursive: true
-        })
-        fs.writeFileSync(`${directory}/${this.name}.json`, data);
+        fs.mkdirSync(directory, { recursive: true })
+        fs.writeFileSync(`${directory}/${this.name}.json`, data)
+    }
+    *[Symbol.iterator]() {
+        for(let x of this.values)
+            yield x
     }
 }
 
+
 export type FunctionRef = WithTag<MCFunction>
 export type EntityTypeRef = WithTag<EntityTypeID | `#${EntityTypeTagID}`>
-export type ItemTypeRef = WithTag<ItemID | `#${ItemTagID}`> | '*'
+export type ItemTypeRef = WithTag<ItemID | `#${ItemTagID}`> | '*' 
 export type BlockRef = WithTag<BlockId | `#${BlockTagID}`>
 
 export class FunctionTag extends RegistryTag<FunctionRef> {
