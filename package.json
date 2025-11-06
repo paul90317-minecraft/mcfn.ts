@@ -2,6 +2,15 @@
   "name": "mcfn.ts",
   "version": "1.0.2",
   "main": "dist/index.js",
+  "keywords": [
+    "minecraft",
+    "function",
+    "mcfunction",
+    "typescript",
+    "compiler",
+    "mcfn.ts",
+    "datapack"
+  ],
   "files": [
     "dist"
   ],
