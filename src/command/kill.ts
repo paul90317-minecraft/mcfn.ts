@@ -1,11 +1,11 @@
 import { Command } from "../core/scope";
 import { Vec3 } from "../arg/vec3";
-import { TARGET } from "../arg/selector";
+import { TargetRef } from "../arg/selector";
 
 
 
 class Kill extends Command {
-    constructor(private t?: TARGET) {
+    constructor(private t?: TargetRef) {
         super()
     }
     public toString(): string {
@@ -15,6 +15,6 @@ class Kill extends Command {
     }
 }
 
-export function kill(target: TARGET) {
+export function kill(target: TargetRef) {
     new Kill(target)
 }

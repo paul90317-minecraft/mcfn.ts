@@ -2,7 +2,7 @@
 import { LootTable } from "../file/registry";
 import { Command } from "../core/scope";
 import { Vec3 } from "../arg/vec3";
-import { TARGET } from "../arg/selector";
+import { TargetRef } from "../arg/selector";
 import { Item, Slot } from "./item";
 
 type TOOLS = Item | 'mainhand' | 'offhand'
@@ -11,7 +11,7 @@ class BaseSource {
     constructor() {
 
     }
-    public give (target: TARGET) {
+    public give (target: TargetRef) {
         new LootGive(target, this)
     }
     public insert(pos: Vec3) {
@@ -47,7 +47,7 @@ class LootSource extends BaseSource {
 }
 
 class KillSource extends BaseSource {
-    constructor(private target: TARGET) {
+    constructor(private target: TargetRef) {
         super()
     }
     public toString() {
@@ -68,7 +68,7 @@ class MineSource extends BaseSource {
 }
 
 class LootGive extends Command {
-    constructor(private players: TARGET, private source: BaseSource) { super(); }
+    constructor(private players: TargetRef, private source: BaseSource) { super(); }
     public toString() {
         return `loot give ${this.players} ${this.source}`;
     }
@@ -101,6 +101,6 @@ export const loot = Object.assign((loot: LootTable) => new LootSource(loot), {
     // target actions
     fish: (loot: LootTable, pos: Vec3, tool: TOOLS) => new FishSource(loot, pos, tool),
     mine: (pos: Vec3, tool: TOOLS) => new MineSource(pos, tool),
-    kill: (entity: TARGET) => new KillSource(entity)
+    kill: (entity: TargetRef) => new KillSource(entity)
 });
 

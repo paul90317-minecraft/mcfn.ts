@@ -1,17 +1,17 @@
 // https://minecraft.wiki/w/Commands/tag
 
-import { TARGET } from "../arg/selector"
+import { TargetRef } from "../arg/selector"
 import { Command } from "../core/scope"
 import { config } from "../config"
 
 const tags: Set<string> = new Set()
 
 class EntityTagCommand extends Command {
-    public readonly target: TARGET
+    public readonly target: TargetRef
     public readonly tag: EntityTag
     public readonly action: "add" | "remove"
 
-    constructor(target: TARGET, tag: EntityTag, action: "add" | "remove") {
+    constructor(target: TargetRef, tag: EntityTag, action: "add" | "remove") {
         super()
         this.target = target
         this.tag = tag
@@ -39,11 +39,11 @@ export class EntityTag {
         tags.add(this.name)
     }
 
-    public add(selector: TARGET) {
+    public add(selector: TargetRef) {
         return new EntityTagCommand(selector, this, "add")
     }
 
-    public remove(selector: TARGET) {
+    public remove(selector: TargetRef) {
         return new EntityTagCommand(selector, this, "remove")
     }
     public toString(){

@@ -3,7 +3,7 @@
 import { Command } from "../core/scope";
 import { ParticleTypeID } from "../mcmeta";
 import { Vec3 } from "../arg/vec3";
-import { TARGET } from "../arg/selector";
+import { TargetRef } from "../arg/selector";
 
 /**
  * 代表 Minecraft Java Edition 的 /particle 指令。
@@ -27,7 +27,7 @@ class Particle extends Command {
         private speed?: number,
         private count?: number,
         private mode?: 'force' | 'normal',
-        private viewers?: TARGET
+        private viewers?: TargetRef
     ) {
         super();
     }
@@ -65,10 +65,10 @@ export function particle(
     speed: number, 
     count: number, 
     mode?: 'force' | 'normal', 
-    viewers?: TARGET
+    viewers?: TargetRef
 ): void;
 
 // 實現函數
-export function particle(a: ParticleTypeID, b?: Vec3 | Vec3, c?: Vec3, d?: number, e?: number, f?: 'force' | 'normal', g?: TARGET) {
+export function particle(a: ParticleTypeID, b?: Vec3 | Vec3, c?: Vec3, d?: number, e?: number, f?: 'force' | 'normal', g?: TargetRef) {
     new Particle(a, b, c, d, e, f, g)
 }

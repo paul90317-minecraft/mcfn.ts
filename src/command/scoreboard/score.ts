@@ -1,5 +1,5 @@
 import { Objective } from "./objective"
-import { TARGET } from "../../arg/selector"
+import { TargetRef } from "../../arg/selector"
 import { NubmerRangeInterface, NumberRange } from "../../arg/range"
 import { Command } from "../../core/scope"
 import { Condition } from "../../arg/condition"
@@ -10,8 +10,8 @@ type MODIFIERS = 'add' | 'remove' | 'set'
 
 export class Score {
     private objective: Objective
-    private target: TARGET
-    constructor(objective: Objective, target: TARGET) {
+    private target: TargetRef
+    constructor(objective: Objective, target: TargetRef) {
         this.objective = objective
         this.target = target
     }

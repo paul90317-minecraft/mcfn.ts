@@ -2,7 +2,7 @@
 // https://minecraft.wiki/w/Data_component_format#List_of_components
 // https://minecraft.fandom.com/wiki/Commands/clear
 
-import { TARGET } from "../arg/selector";
+import { TargetRef } from "../arg/selector";
 import { Vec3 } from "../arg/vec3";
 import { ItemSlotID } from "../mcmeta/command_argument_type/item_slot";
 import { DataComponentTypeID } from "../mcmeta";
@@ -12,9 +12,9 @@ import { ItemModifier, ItemRef } from "../file";
 import { Condition } from "../arg/condition";
 
 export class Slot {
-    private target: TARGET | Vec3
+    private target: TargetRef | Vec3
     private slot: ItemSlotID
-    constructor(target: TARGET | Vec3, slot: ItemSlotID) {
+    constructor(target: TargetRef | Vec3, slot: ItemSlotID) {
         this.target = target
         this.slot = slot
     }
@@ -118,10 +118,10 @@ export class Item {
             )
         return `${this.item}[${components.join(',')}]`
     }
-    public clear(target?: TARGET, maxCount?: number) {
+    public clear(target?: TargetRef, maxCount?: number) {
         new Clear(target, this, maxCount)
     }
-    public give(target: TARGET, count?: number){
+    public give(target: TargetRef, count?: number){
         new Give(target, this, count)
     }
 }
@@ -137,7 +137,7 @@ class ItemMatch extends Condition {
 
 class Clear extends Command {
     constructor(
-        private targets?: TARGET,
+        private targets?: TargetRef,
         private item?: Item, 
         private maxCount?: number 
     ) {
@@ -165,7 +165,7 @@ class Clear extends Command {
 
 class Give extends Command {
     constructor(
-        private target: TARGET,
+        private target: TargetRef,
         private item: Item,
         private count?: number
     ) {
@@ -188,5 +188,5 @@ class Give extends Command {
 }
 
 export const item = Object.assign((it: ItemRef, comp?: ItemComponents)=>new Item(it, comp), {
-    slot: (tar: Vec3 | TARGET, slot: ItemSlotID)=>new Slot(tar, slot)
+    slot: (tar: Vec3 | TargetRef, slot: ItemSlotID)=>new Slot(tar, slot)
 })

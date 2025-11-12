@@ -26,6 +26,8 @@ export type TextObject = {
   color?: ColorID,
 } & Partial<Record<FormatID, boolean>>
 
+export type TextRef = TextObject | TextObject[] | string
+
 import { EquipmentTexture, ItemModel, ItemTexture, Model } from "../asset"
 import { Equipment } from "../asset/equipment"
 import { ItemModifier, LootTable, Predicate, Recipe, Registry } from "./registry"

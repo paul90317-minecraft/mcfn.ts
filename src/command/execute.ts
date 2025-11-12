@@ -1,6 +1,6 @@
 // https://zh.minecraft.wiki/w/%E5%91%BD%E4%BB%A4/execute?variant=zh-tw
 
-import { Selector, TARGET } from '../arg/selector'
+import { Selector, TargetRef } from '../arg/selector'
 import { Command } from '../core/scope'
 import { MCFunction } from '../file/function';
 import { Vec3 } from '../arg/vec3';
@@ -40,14 +40,14 @@ class Unless extends If {
 }
 
 class As {
-    constructor(public readonly entity: TARGET) {}
+    constructor(public readonly entity: TargetRef) {}
     public toString() {
         return `as ${this.entity}`;
     }
 }
 
 class At {
-    constructor(public readonly entity: TARGET) {}
+    constructor(public readonly entity: TargetRef) {}
     public toString() {
         return `at ${this.entity}`;
     }
@@ -143,11 +143,11 @@ class Control {
         };
     }
 
-    public as(entity: TARGET) {
+    public as(entity: TargetRef) {
         return this.next(new As(entity));
     }
 
-    public at(entity: TARGET) {
+    public at(entity: TargetRef) {
         return this.next(new At(entity));
     }
 
@@ -209,8 +209,8 @@ class Execute extends Command {
 }
 
 export const execute = {
-    as: (entity: TARGET) => new Control().as(entity),
-    at: (entity: TARGET) => new Control().at(entity),
+    as: (entity: TargetRef) => new Control().as(entity),
+    at: (entity: TargetRef) => new Control().at(entity),
     if: (condition: IF_ARGS) => new Control().if(condition),
     unless: (condition: IF_ARGS) => new Control().unless(condition),
     positioned: (position: Vec3) => new Control().positioned(position),

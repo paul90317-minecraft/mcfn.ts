@@ -3,7 +3,7 @@
 
 import { ObjectiveMatches } from "../command/scoreboard/objective"
 import { EntityTag } from "../command/tag"
-import { EntityTypeRef } from "../core/tag"
+import { EntityTypeRef } from "../file"
 import { NubmerRangeInterface, NumberRange } from "./range"
 import { NBTCompound, NBTBase } from "./nbt"
 import { Team } from "../command/team"
@@ -108,7 +108,7 @@ export class Selector {
     }
 }
 
-export type TARGET = Selector | string
+export type TargetRef = Selector | string
 
 export function sel(selector: SELECTORS, filter?: SelectFilter) {
     return new Selector(selector, filter)

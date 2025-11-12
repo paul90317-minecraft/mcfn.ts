@@ -1,16 +1,16 @@
 import { Command } from "../core/scope";
 import { Vec3 } from "../arg/vec3";
-import { TARGET } from "../arg/selector";
+import { TargetRef } from "../arg/selector";
 
 
 
 class TP extends Command {
-    private src?: TARGET
-    private dst: TARGET | Vec3
-    constructor(a: TARGET | Vec3, b?: TARGET | Vec3) {
+    private src?: TargetRef
+    private dst: TargetRef | Vec3
+    constructor(a: TargetRef | Vec3, b?: TargetRef | Vec3) {
         super()
         if(b) {
-            this.src = a as TARGET
+            this.src = a as TargetRef
             this.dst = b
         } else {
             this.dst = a
@@ -23,8 +23,8 @@ class TP extends Command {
     }
 }
 
-export function tp(dst: TARGET | Vec3): void
-export function tp(src: TARGET, dst: TARGET | Vec3): void
-export function tp(a: TARGET | Vec3, b?: TARGET | Vec3) {
+export function tp(dst: TargetRef | Vec3): void
+export function tp(src: TargetRef, dst: TargetRef | Vec3): void
+export function tp(a: TargetRef | Vec3, b?: TargetRef | Vec3) {
     new TP(a, b)
 }

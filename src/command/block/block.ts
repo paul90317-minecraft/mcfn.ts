@@ -6,7 +6,7 @@ import { Command } from "../../core/scope";
 import { Vec3 } from "../../arg/vec3";
 import { NBTBase, NBTCompound } from "../../arg/nbt";
 import { Condition } from "../../arg/condition";
-import { BlockRef } from "../../core/tag";
+import { BlockRef } from "../../file";
 import { BlockFill, BlockReplace, FILL_MODE, REPLACE_MODE } from "./fill";
 
 // 處理 setblock 指令模式

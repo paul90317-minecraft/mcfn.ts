@@ -1,10 +1,10 @@
 // https://minecraft.fandom.com/wiki/Commands/title
 
-import { TARGET } from "../arg/selector";
+import { TargetRef } from "../arg/selector";
 import { raw } from './raw'
 import { NBTText } from "../arg/nbt";
 
-export function title(target: TARGET) {
+export function title(target: TargetRef) {
     return {
         clear: () => raw(`title ${target} clear`),
         reset: () => raw(`title ${target} reset`),

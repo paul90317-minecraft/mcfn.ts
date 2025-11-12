@@ -1,9 +1,9 @@
 import { DamageTypeId } from "../mcmeta";
 import { Vec3 } from "../arg";
-import { TARGET } from "../arg/selector";
+import { TargetRef } from "../arg/selector";
 import { raw } from "./raw";
 
-export function damage(target: TARGET, amound: number, type?: DamageTypeId, by?: TARGET, from?: TARGET) {
+export function damage(target: TargetRef, amound: number, type?: DamageTypeId, by?: TargetRef, from?: TargetRef) {
     if(from)
         return raw(`damage ${target} ${amound} ${type} by ${by} from ${from}`)
     if(by)
@@ -13,7 +13,7 @@ export function damage(target: TARGET, amound: number, type?: DamageTypeId, by?:
      return raw(`damage ${target} ${amound}`)
 }
 
-export function damage_at(target: TARGET, amound: number, type?: DamageTypeId, at?: Vec3) {
+export function damage_at(target: TargetRef, amound: number, type?: DamageTypeId, at?: Vec3) {
     if(at)
         return raw(`damage ${target} ${amound} ${type} at ${at}`)
     if(type)

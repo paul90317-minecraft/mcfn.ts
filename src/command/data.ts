@@ -1,7 +1,7 @@
 import { Command } from "../core/scope"
 import { Vec3 } from "../arg/vec3"
 import { NBTBase, NBTCompound } from "../arg/nbt"
-import { TARGET } from "../arg/selector"
+import { TargetRef } from "../arg/selector"
 import { config } from "../config"
 
 export abstract class Data {
@@ -69,8 +69,8 @@ export abstract class Data {
 
 
 class EntityData extends Data {
-    private target: TARGET
-    constructor(target: TARGET, paths: string[] = []) {
+    private target: TargetRef
+    constructor(target: TargetRef, paths: string[] = []) {
         super(paths)
         this.target = target
     }
@@ -148,6 +148,6 @@ class DataModify extends Command {
 
 export let data = {
     block:(pos: Vec3) => new BlockData(pos),
-    entity:(target: TARGET) => new EntityData(target),
+    entity:(target: TargetRef) => new EntityData(target),
     storage: (name: string) => new StorageData(name)
 }

@@ -2,7 +2,7 @@
 
 import { Command } from "../core/scope"; 
 import { Vec3 } from "../arg/vec3";
-import { TARGET } from "../arg/selector"; 
+import { TargetRef } from "../arg/selector"; 
 import { SoundEventID } from "../mcmeta"; // 引入使用者提供的 SOUND_EVENTS
 
 /**
@@ -41,7 +41,7 @@ class Playsound extends Command {
     constructor(
         private sound: SoundEventID, // 使用 SOUND_EVENTS 替代 string
         private source?: SOUND_SOURCES,
-        private targets?: TARGET,
+        private targets?: TargetRef,
         private pos?: Vec3,
         private volume?: number,
         private pitch?: number,
@@ -105,16 +105,16 @@ export function playsound(sound: SoundEventID): void;
 export function playsound(sound: SoundEventID, source: SOUND_SOURCES): void;
 
 // 形式 3: 指定音效事件 ID、分類和目標 (targets)
-export function playsound(sound: SoundEventID, source: SOUND_SOURCES, targets: TARGET): void;
+export function playsound(sound: SoundEventID, source: SOUND_SOURCES, targets: TargetRef): void;
 
 // 形式 4: 指定音效事件 ID、分類、目標和位置 (pos)
-export function playsound(sound: SoundEventID, source: SOUND_SOURCES, targets: TARGET, pos: Vec3): void;
+export function playsound(sound: SoundEventID, source: SOUND_SOURCES, targets: TargetRef, pos: Vec3): void;
 
 // 形式 5: 包含音量 (volume)
 export function playsound(
     sound: SoundEventID, 
     source: SOUND_SOURCES, 
-    targets: TARGET, 
+    targets: TargetRef, 
     pos: Vec3, 
     volume: number
 ): void;
@@ -123,7 +123,7 @@ export function playsound(
 export function playsound(
     sound: SoundEventID, 
     source: SOUND_SOURCES, 
-    targets: TARGET, 
+    targets: TargetRef, 
     pos: Vec3, 
     volume: number, 
     pitch: number
@@ -133,7 +133,7 @@ export function playsound(
 export function playsound(
     sound: SoundEventID, 
     source: SOUND_SOURCES, 
-    targets: TARGET, 
+    targets: TargetRef, 
     pos: Vec3, 
     volume: number, 
     pitch: number, 
@@ -145,7 +145,7 @@ export function playsound(
 export function playsound(
     a: SoundEventID, // 現在強型別為 SOUND_EVENTS
     b?: SOUND_SOURCES,
-    c?: TARGET,
+    c?: TargetRef,
     d?: Vec3,
     e?: number,
     f?: number,

@@ -2,10 +2,10 @@
 
 // https://minecraft.wiki/w/Commands/tag
 
-import { TARGET } from "../arg/selector"
+import { TargetRef } from "../arg/selector"
 import { config } from "../config"
 import { raw } from "./raw"
-import { NBTText } from "../arg/nbt"
+import { NBTText, NBTTextRef } from "../arg/nbt"
 import { ColorID } from "../mcmeta/command_argument_type"
 
 export const teams: Record<string, Team> = {}
@@ -13,7 +13,7 @@ export const teams: Record<string, Team> = {}
 export class Team {
     private id: string
     private name?: string
-    constructor(opt?: {name?: NBTText, id?:string}) {
+    constructor(opt?: {name?: NBTTextRef, id?:string}) {
         const {id, name} = opt ?? {}
         if (id) {
             if (id[0] === "_")
@@ -44,14 +44,14 @@ export class Team {
         raw(`team empty ${this}`)
     }
 
-    join(target: TARGET) {
+    join(target: TargetRef) {
         raw(`team join ${this} ${target}`)
     }
 
-    leave(target: TARGET) {
+    leave(target: TargetRef) {
         raw(`team leave ${this} ${target}`)
     }
-    modify(mod: TEAM_MOD) {
+    modify(mod: TeamModObject) {
         Object.entries(mod).forEach(([k,v])=>{
             raw(`team modify ${this} ${k} ${v}`)
         })
@@ -62,14 +62,14 @@ export class Team {
     }
 }
 
-type VISIBLE = 'never' | 'hideForOtherTeams' | 'hideForOwnTeam' | 'always'
-type TEAM_MOD = {
+type VisibilityID = 'never' | 'hideForOtherTeams' | 'hideForOwnTeam' | 'always'
+type TeamModObject = {
     displayName?: NBTText
     color?: ColorID,
     friendlyFire?: boolean,
     seeFriendlyInvisibles?: boolean,
-    nametagVisibility?: VISIBLE
-    deathMessageVisibility?: VISIBLE
+    nametagVisibility?: VisibilityID
+    deathMessageVisibility?: VisibilityID
     collisionRule?: 'always' | 'never' | 'pushOtherTeams' | 'pushOwnTeam'
     prefix?: NBTText,
     suffix?: NBTText

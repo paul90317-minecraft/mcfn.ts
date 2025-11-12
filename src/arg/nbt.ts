@@ -1,7 +1,7 @@
 // https://minecraft.fandom.com/wiki/NBT_format
 
 import { ColorID } from "../mcmeta/command_argument_type";
-import { FormatID, TextObject } from "../file/object";
+import { FormatID, TextObject, TextRef } from "../file/object";
 
 export abstract class NBTBase {
   __nbt_base = true
@@ -112,6 +112,8 @@ export class NBTText extends NBTCompound<NBTTextInner> {
   }
 }
 
+export type NBTTextRef = NBTList<NBTText> | NBTText | NBTString<string>
+
 export const nbt = {
   byte: (x: number | boolean) => new NBTByte(x),
   short: (x: number) => new NBTShort(x),
@@ -125,5 +127,11 @@ export const nbt = {
   double: (x: number) => new NBTDouble(x),
   float: (x: number) => new NBTFloat(x),
   string: (x: any) => new NBTString(`${x}`),
-  text: (_name: TextObject) => new NBTText(_name)
+  text: (content: TextRef) => {
+    if(content instanceof Array)
+      return content.map(i => new NBTText(i))
+    if(content instanceof Object)
+      return new NBTText(content)
+    return new NBTString(content)
+  }
 }

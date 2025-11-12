@@ -1,7 +1,7 @@
 // https://minecraft.fandom.com/wiki/Scoreboard
 
 import { ObjectiveCriterionID } from '../../mcmeta/command_argument_type/objective_criteria'
-import { TARGET } from '../../arg/selector'
+import { TargetRef } from '../../arg/selector'
 import { NubmerRangeInterface, NumberRange } from '../../arg/range'
 import { Command } from '../../core/scope'
 import { Score } from './score'
@@ -34,7 +34,7 @@ export class Objective {
         objectives[this.name_] = this
 
     }
-    public get(target: TARGET) {
+    public get(target: TargetRef) {
         return new Score(this, target)
     }
     public matches(bound: NubmerRangeInterface) {
