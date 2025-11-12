@@ -1,4 +1,4 @@
-import { MCFunction } from "../command/function";
+import { MCFunction } from "../file/function";
 import { Command, InlineScope } from "../core/scope";
 
 export function ret(code: (()=>void) | 'fail' | number, inline: boolean = false) {

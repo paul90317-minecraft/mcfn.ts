@@ -1,9 +1,8 @@
 import { config } from "../config";
 import fs from 'fs'
 import { Scope } from '../core/scope'
-import { FunctionTag } from "../core/tag";
-import { WithTag } from "../core/tag";
-import { raw } from "./raw";
+import { FunctionTag, FunctionRef } from ".";
+import { raw } from "../command/raw";
 
 export const functions: Record<string, MCFunction> = {}
 
@@ -41,8 +40,8 @@ export class MCFunction extends Scope {
 }
 
 export function mcfn(fn: (()=>void), name?: string): MCFunction & (() => void)
-export function mcfn(fn: WithTag<MCFunction>[], name?: string): FunctionTag & (() => void)
-export function mcfn(fn: (()=>void) | WithTag<MCFunction>[], name?: string) {
+export function mcfn(fn: FunctionRef[], name?: string): FunctionTag & (() => void)
+export function mcfn(fn: (()=>void) | FunctionRef[], name?: string) {
     if (fn instanceof Function) {
         return new MCFunction(fn, name)
     }

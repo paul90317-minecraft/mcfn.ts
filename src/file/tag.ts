@@ -1,7 +1,7 @@
 // https://zh.minecraft.wiki/w/%E6%A0%87%E7%AD%BE?variant=zh-tw
 
 import { BlockId, EntityTypeID, ItemID } from "../mcmeta"
-import { MCFunction, functions } from "../command/function"
+import { MCFunction, functions } from "./function"
 import fs from 'fs';
 import { config } from "../config";
 import { raw } from "../command";

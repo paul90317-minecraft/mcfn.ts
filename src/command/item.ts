@@ -8,9 +8,8 @@ import { ItemSlotID } from "../mcmeta/command_argument_type/item_slot";
 import { DataComponentTypeID } from "../mcmeta";
 import { NBTBase } from "../arg/nbt";
 import { Command } from "../core/scope";
-import { ItemModifier } from "../core/registry";
+import { ItemModifier, ItemRef } from "../file";
 import { Condition } from "../arg/condition";
-import { ItemRef } from "../core/tag";
 
 export class Slot {
     private target: TARGET | Vec3

@@ -4,7 +4,6 @@
 
 import { config } from "../config"
 import fs from 'fs';
-import { RegistryTag, FunctionTag, EntityTypeRef, BlockRef, FunctionRef, ItemRef } from './tag'
 import { object_to_json } from "./object";
 
 type  REGISTRY_NAME = 'loot_table' | 'item_modifier' | 'predicate' | 'recipe'
@@ -66,27 +65,5 @@ export class ItemModifier extends Registry {
 export class Recipe extends Registry {
     constructor(data: object, namesp: string, name?: string) {
         super('recipe', data, namesp, name)
-    }
-}
-
-export const datapack = {
-    loot_table: (data: object, name?: string) => 
-        new LootTable(data, config.namespace, name),
-    item_modifier: (data: object, name?: string) => 
-        new ItemModifier(data, config.namespace, name),
-    predicate: (data: object, name?: string) => 
-        new Predicate(data, config.namespace, name),
-    recipe: (data: object, name?: string) =>
-        new Recipe(data, config.namespace, name),
-    tags: {
-        entity_type: (values: readonly EntityTypeRef[], name?: string) => new RegistryTag<EntityTypeRef>(
-            'entity_type', values, config.namespace, name),
-        item: (values: readonly Exclude<ItemRef, '*'>[], name?: string) => new RegistryTag<Exclude<ItemRef, '*'>>(
-            'item', values, config.namespace, name),
-        block: (values: readonly BlockRef[], name?: string) => new RegistryTag<BlockRef>(
-            'block', values, config.namespace, name),
-        function: (values: readonly FunctionRef[], name?: string) => new FunctionTag(
-            values, config.namespace, name
-        )
     }
 }

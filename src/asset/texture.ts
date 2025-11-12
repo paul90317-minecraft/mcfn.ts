@@ -36,18 +36,8 @@ export class ItemTexture extends Texture {
     }
 }
 
-type EQUIPMENTS = 'humanoid' | 'humanoid_leggings' | 'wings';
 export class EquipmentTexture extends Texture {
-    constructor(type: EQUIPMENTS, path: string, name?: string) {
+    constructor(type: 'humanoid' | 'humanoid_leggings' | 'wings', path: string, name?: string) {
         super(path, `entity/equipment/${type}/`, '', name)
-    }
-}
-
-export const texture = {
-    item(path: string, name?: string) {
-        return new ItemTexture(path, name)
-    },
-    equipment(type: EQUIPMENTS, path: string, name?: string) {
-        return new EquipmentTexture(type, path, name)
     }
 }

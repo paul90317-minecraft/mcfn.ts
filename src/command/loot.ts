@@ -1,5 +1,5 @@
 // https://minecraft.fandom.com/wiki/Commands/loot
-import { LootTable } from "../core/registry";
+import { LootTable } from "../file/registry";
 import { Command } from "../core/scope";
 import { Vec3 } from "../arg/vec3";
 import { TARGET } from "../arg/selector";

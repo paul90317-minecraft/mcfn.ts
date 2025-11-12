@@ -1,5 +1,0 @@
-export * from './tag'
-export { datapack } from './registry'
-export { LootTable, Predicate, ItemModifier } from './registry'
-export { minecraft } from './minecraft'
-export * from './object'

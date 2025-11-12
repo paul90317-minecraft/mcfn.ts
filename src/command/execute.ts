@@ -2,11 +2,11 @@
 
 import { Selector, TARGET } from '../arg/selector'
 import { Command } from '../core/scope'
-import { MCFunction } from './function';
+import { MCFunction } from '../file/function';
 import { Vec3 } from '../arg/vec3';
 import { DimensionID, EntityTypeID } from '../mcmeta';
 import { InlineScope } from '../core/scope';
-import { Predicate } from '../core/registry';
+import { Predicate } from '../file/registry';
 import { Data } from './data';
 import { Score } from './scoreboard/score';
 import { BossBar } from './bossbar';

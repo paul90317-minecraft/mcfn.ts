@@ -1,8 +1,7 @@
 // https://minecraft.fandom.com/wiki/NBT_format
 
 import { ColorID } from "../mcmeta/command_argument_type";
-import { FormatID } from "../core/object";
-import { TextObject } from '../core/object'
+import { FormatID, TextObject } from "../file/object";
 
 export abstract class NBTBase {
   __nbt_base = true
